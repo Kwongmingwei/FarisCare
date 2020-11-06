@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainMenu">
+
+    <Button
+        android:id="@+id/groceries"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Request for groceries" />
+
+    <Button
+        android:id="@+id/social"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/groceries"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="-80dp"
+        android:text="Social" />
+
+    <Button
+        android:id="@+id/emergency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/social"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="-83dp"
+        android:text="EMERGENCY" />
+
+</RelativeLayout>
