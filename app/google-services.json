@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "422437213773",
+    "firebase_url": "https://fariscare.firebaseio.com",
+    "project_id": "fariscare",
+    "storage_bucket": "fariscare.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422437213773:android:586c3404f65214ed8cae04",
+        "android_client_info": {
+          "package_name": "com.example.fariscare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "422437213773-nrnmvkcj2vgge3tkrac6hcmd0287lf4p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fariscare",
+            "certificate_hash": "7a793275793dbf3b71d0a7ba067745248515cf96"
+          }
+        },
+        {
+          "client_id": "422437213773-ma38ee5ocipaqpmdp7al9m108vga1fu3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLtHa-DmJXvnB7fkG0mL9_J0SqDR6SSz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "422437213773-ma38ee5ocipaqpmdp7al9m108vga1fu3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
