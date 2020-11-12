@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.v(TAG, "the user id sent= " + uid);
                         Bundle bundle = new Bundle();
                         bundle.putString("User_UID", uid);
-                        Intent MainActivity = new Intent(MainActivity.this, MainActivity.class);
+                        Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);
                         MainActivity.putExtra("User_UID", bundle);
                         Log.v(TAG, "sending this uid to main activity " + uid);
                         startActivity(MainActivity);
@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                         Intent ToMenuPage = new Intent(MainActivity.this, MainMenu.class);
                                         ToMenuPage.putExtra("User_UID", bundle);
                                         ToMenuPage.putExtra("email", bundle);
+                                        Auto_login.edit().putBoolean("logged", true).apply();
                                         Log.v(TAG, "sending this uid to main activity " + uid);
                                         startActivity(ToMenuPage);
 
