@@ -143,7 +143,7 @@ public class RegisterPage extends AppCompatActivity {
                                 //Chris -  Customised user id,make sure no two users have the same user id
                                 String idvalue = String.valueOf(maxid + 1);
                                 //Chris - Add the user to firebase database
-                                databaseReference.child(idvalue).setValue(member);
+                                databaseReference.child(idvalue ).setValue(member);
                                 Log.v(TAG, "Registered Successfully");
                                 Toast.makeText(RegisterPage.this, "Registered Successfully", Toast.LENGTH_SHORT).show();
                                 Intent login = new Intent(RegisterPage.this, MainActivity.class);
