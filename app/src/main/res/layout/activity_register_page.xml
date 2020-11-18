@@ -60,8 +60,15 @@
                 android:hint="Confirm Password"
                 android:inputType="textPassword"
                 android:textSize="20dp" />
+             <EditText
+                 android:id="@+id/Enter"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:hint="Name"
+                 android:inputType="textPersonName"
+                 android:textSize="20dp" />
 
-            <Button
+         <Button
                 android:id="@+id/RegisterButton"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"

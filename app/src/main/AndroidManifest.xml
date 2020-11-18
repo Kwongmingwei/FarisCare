@@ -3,6 +3,7 @@
     package="com.example.fariscare">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterPage"></activity>
+        <activity android:name=".OCall"></activity>
+        <activity android:name=".RegisterPage" />
         <activity android:name=".MainMenu" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -1,8 +1,5 @@
 package com.example.fariscare;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class RegisterPage extends AppCompatActivity {
-    EditText EnterEmail,EnterPassword,EnterName,ConfirmPassword,uniquekey;
+    EditText EnterEmail,EnterPassword,EnterName,ConfirmPassword,PhoneNo;
     Button RegisterButton;
     FirebaseAuth Auth;
     DatabaseReference databaseReference;
@@ -111,6 +111,12 @@ public class RegisterPage extends AppCompatActivity {
                     Toast.makeText(RegisterPage.this, "Password Do Not Match", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (confirmPassword.equals(""))//Chris - Check for empty Inputs
+                {
+                    Log.v(TAG, "Confirm Password");
+                    Toast.makeText(RegisterPage.this, "Confirm Password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 else {
                     progressBar.setVisibility(View.VISIBLE);//Chris - For user to know that the data is being processed
@@ -130,11 +136,14 @@ public class RegisterPage extends AppCompatActivity {
                                 member.setName(EnterName.getText().toString());
                                 member.setEmail(EnterEmail.getText().toString());
                                 member.setPassword(EnterPassword.getText().toString());
-
+                                member.setPassword(EnterPassword.getText().toString());
+                                member.setAddress("");
+                                long id=maxid + 1;
+                                member.setUserID(id);
                                 //Chris -  Customised user id,make sure no two users have the same user id
-                                String id = String.valueOf(maxid + 1);
+                                String idvalue = String.valueOf(maxid + 1);
                                 //Chris - Add the user to firebase database
-                                databaseReference.child(id).setValue(member);
+                                databaseReference.child(idvalue ).setValue(member);
                                 Log.v(TAG, "Registered Successfully");
                                 Toast.makeText(RegisterPage.this, "Registered Successfully", Toast.LENGTH_SHORT).show();
                                 Intent login = new Intent(RegisterPage.this, MainActivity.class);
