@@ -121,32 +121,20 @@ public class RegisterPage extends AppCompatActivity {
                 else {
                     progressBar.setVisibility(View.VISIBLE);//Chris - For user to know that the data is being processed
                     //Authentication
-                    Auth.createUserWithEmailAndPassword(email, confirmPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    Auth.signInWithEmailAndPassword(email, confirmPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //Chris - check whether register of user is successful or not
-                            if (!task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 //Custom message if email is invaild
                                 Toast.makeText(RegisterPage.this, "The email is invaild", Toast.LENGTH_SHORT).show();
                                 Log.v(TAG, "The email is invaild");
                             } else {
                                 progressBar.setVisibility(View.INVISIBLE);
-                                //Chris - Register is successful,saving user details to firebase database
-                                member.setName(EnterName.getText().toString());
-                                member.setEmail(EnterEmail.getText().toString());
-                                member.setPassword(EnterPassword.getText().toString());
-                                member.setPassword(EnterPassword.getText().toString());
-                                member.setAddress("");
-                                long id=maxid + 1;
-                                member.setUserID(id);
-                                //Chris -  Customised user id,make sure no two users have the same user id
-                                String idvalue = String.valueOf(maxid + 1);
-                                //Chris - Add the user to firebase database
-                                databaseReference.child(idvalue ).setValue(member);
-                                Log.v(TAG, "Registered Successfully");
-                                Toast.makeText(RegisterPage.this, "Registered Successfully", Toast.LENGTH_SHORT).show();
-                                Intent login = new Intent(RegisterPage.this, MainActivity.class);
+                                Intent login = new Intent(RegisterPage.this, RegisterPt2.class);
+                                login.putExtra("email",email);
+                                login.putExtra("password",confirmPassword);
                                 startActivity(login);
                             }
                         }

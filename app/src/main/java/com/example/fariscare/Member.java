@@ -9,7 +9,8 @@ public class Member {
     private String EmergencyContact;
     private String RequestedItems;
     private String RequestHistory;
-
+    private String ProfilePic;
+    private String PostalCode;
 
 
     public Member() {
@@ -77,5 +78,18 @@ public class Member {
     }
 
     public void setRequestHistory(String requestHistory) {RequestHistory = requestHistory; }
+    public String getProfilePic() {
+        return ProfilePic;
+    }
+
+    public void setProfilePic(String profilePic) { ProfilePic = profilePic; }
+
+    public String getPostalCode() {
+        return PostalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        PostalCode = postalCode;
+    }
 
 }

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".OCall"></activity>
+        <activity android:name=".RegisterPt2"></activity>
+        <activity android:name=".OCall" />
         <activity android:name=".RegisterPage" />
         <activity android:name=".MainMenu" />
         <activity android:name=".MainActivity">
