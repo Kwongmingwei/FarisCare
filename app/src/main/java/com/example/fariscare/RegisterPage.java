@@ -1,18 +1,17 @@
 package com.example.fariscare;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -137,11 +136,14 @@ public class RegisterPage extends AppCompatActivity {
                                 member.setName(EnterName.getText().toString());
                                 member.setEmail(EnterEmail.getText().toString());
                                 member.setPassword(EnterPassword.getText().toString());
+                                member.setPassword(EnterPassword.getText().toString());
                                 member.setAddress("");
+                                long id=maxid + 1;
+                                member.setUserID(id);
                                 //Chris -  Customised user id,make sure no two users have the same user id
-                                String id = String.valueOf(maxid + 1);
+                                String idvalue = String.valueOf(maxid + 1);
                                 //Chris - Add the user to firebase database
-                                databaseReference.child(id).setValue(member);
+                                databaseReference.child(idvalue).setValue(member);
                                 Log.v(TAG, "Registered Successfully");
                                 Toast.makeText(RegisterPage.this, "Registered Successfully", Toast.LENGTH_SHORT).show();
                                 Intent login = new Intent(RegisterPage.this, MainActivity.class);

@@ -1,5 +1,6 @@
 package com.example.fariscare;
 public class Member {
+    private long UserID;
     private String Name;
     private String Email;
     private String password;
@@ -13,6 +14,12 @@ public class Member {
 
     public Member() {
     }
+
+    public long getUserID() {
+        return UserID;
+    }
+
+    public void setUserID(long id) { UserID=id;}
 
     public String getName() {
         return Name;
