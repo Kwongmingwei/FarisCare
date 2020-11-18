@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
+        Auto_login.edit().putBoolean("logged", false).apply();
         if(Auto_login.getBoolean("logged",false)){
             databaseReference.orderByChild("email").equalTo(user.getEmail()).addValueEventListener(new ValueEventListener() {
                 @Override

@@ -7,71 +7,70 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
+    android:background="#2768A5"
     tools:context=".MainActivity">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="470dp"
-        android:layout_alignParentStart="true"
+        android:layout_alignParentStart="false"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="140dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="29dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
+
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="362dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="100dp"
             android:layout_marginBottom="30dp"
-            android:text="Member Login"
-            android:textColor="@color/colorPrimaryDark"
+            android:paddingLeft="20dp"
+            android:text="We care for you"
+            android:textColor="#FFD246"
             android:textSize="45dp"
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/EnterEmail"
-            android:layout_width="match_parent"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
-            android:hint="Email"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="10dp"
+            android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="12dp"
+            android:background="#ffff"
+            android:hint="Username"
             android:inputType="textEmailAddress"
-            android:textSize="20dp" />
+            android:padding="9dp"
+            android:textSize="20dp"
+
+            />
 
         <EditText
             android:id="@+id/EnterPassword"
-            android:layout_width="match_parent"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="10dp"
+            android:drawableStart="@drawable/ic_lock"
+            android:drawablePadding="12dp"
+            android:background="#ffff"
             android:hint="Password"
             android:inputType="textPassword"
+            android:padding="9dp"
             android:textSize="20dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="Don't have a account? "
-                android:textSize="14dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/Register"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="10dp"
-                android:text="Register"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="14dp"
-                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -80,17 +79,33 @@
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:text="Login"
+            android:layout_margin="45dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/rounded"
+            android:text="Sign In"
             android:textAllCaps="false"
-            android:textSize="20dp" />
+            android:textColor="#000"
+            android:textSize="23dp"
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
+
+            />
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="77dp"
-            android:indeterminate="true"
-            android:visibility="invisible" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:text="Don't have a account? "
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Register"
+            android:textColor="#FFFF"
+            android:textSize="14dp"
+            android:textStyle="bold" />
     </LinearLayout>
 </RelativeLayout>
