@@ -148,8 +148,6 @@ public class MainActivity extends AppCompatActivity {
                                         SharedPreferences.Editor editor = Auto_login.edit();
                                         editor.putString("UserID", uid).apply();
                                         //Chris - if login is successful
-                                        progressBar.setVisibility(View.INVISIBLE);
-
                                         //Chris - Intent to homepage and pass user id to it
                                         Intent ToMenuPage = new Intent(MainActivity.this, MainMenu.class);
                                         ToMenuPage.putExtra("User_UID", bundle);
