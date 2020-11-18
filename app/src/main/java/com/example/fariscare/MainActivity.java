@@ -125,8 +125,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Password is must be at least contain 6 characters", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                //Chris - Loading circle for improving user experience
-                progressBar.setVisibility(View.VISIBLE);
                 Auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
