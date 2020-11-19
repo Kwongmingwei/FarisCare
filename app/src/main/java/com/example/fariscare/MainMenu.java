@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,8 +17,7 @@ import androidx.core.content.ContextCompat;
 public class MainMenu extends AppCompatActivity {
     Button emergencyButton;
     Button socialButton;
-    String uid;
-    Member member;
+    String eContact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,8 @@ public class MainMenu extends AppCompatActivity {
         setContentView(R.layout.activity_main_menu);
         ActivityCompat.requestPermissions(MainMenu.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
         socialButton=(Button)findViewById(R.id.social);
-        Bundle bundle = getIntent().getExtras();
+        eContact = getIntent().getStringExtra("emergency");
+        Log.v("Menu","Emergency contact: "+eContact);
 
         socialButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,7 +42,7 @@ public class MainMenu extends AppCompatActivity {
         emergencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + member.getEmergencyContact()));
+                Intent call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + eContact));
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions

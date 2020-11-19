@@ -126,7 +126,7 @@ public class RegisterPt2 extends AppCompatActivity {
                                 member.setPassword(password);
                                 member.setPhoneNo(phoneNo);
                                 member.setAddress(address);
-                                member.setEmergencyContact("");
+                                member.setEmergencyContact("87115223");
                                 member.setRequestedItems("");
                                 member.setRequestHistory("");
                                 member.setProfilePic("");

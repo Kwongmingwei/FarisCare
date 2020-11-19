@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         uid = snapshot.getKey();
+                                        String emergencycontact=snapshot.child("emergencyContact").getValue().toString();
                                         String name = snapshot.child("name").getValue().toString();
 
                                         //Chris - show that it works
@@ -143,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                                         //Chris - Intent to homepage and pass user id to it
                                         Intent ToMenuPage = new Intent(MainActivity.this, MainMenu.class);
                                         ToMenuPage.putExtra("User_UID", uid);
+                                        ToMenuPage.putExtra("emergency", emergencycontact);
                                         Auto_login.edit().putBoolean("logged", true).apply();
                                         Log.v(TAG, "sending this uid to main activity " + uid);
                                         startActivity(ToMenuPage);
