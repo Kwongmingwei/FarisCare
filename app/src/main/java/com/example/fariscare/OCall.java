@@ -2,6 +2,7 @@ package com.example.fariscare;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,9 +19,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sinch.android.rtc.ClientRegistration;
 import com.sinch.android.rtc.PushPair;
 import com.sinch.android.rtc.Sinch;
 import com.sinch.android.rtc.SinchClient;
+import com.sinch.android.rtc.SinchError;
 import com.sinch.android.rtc.calling.Call;
 import com.sinch.android.rtc.calling.CallClient;
 import com.sinch.android.rtc.calling.CallClientListener;
@@ -68,6 +71,15 @@ public class OCall extends AppCompatActivity {
 
 
         sinchClient.getCallClient().addCallClientListener(new SinchCallClientListener(){
+            public void onClientStarted(SinchClient client) { }
+
+            public void onClientStopped(SinchClient client) { }
+
+            public void onClientFailed(SinchClient client, SinchError error) { }
+
+            public void onRegistrationCredentialsRequired(SinchClient client, ClientRegistration registrationCallback) { }
+
+            public void onLogMessage(int level, String area, String message) { }
 
         });
         sinchClient.start();
@@ -157,7 +169,9 @@ public class OCall extends AppCompatActivity {
 
     public void callUser(Member member){
         if (call== null){
-            call=sinchClient.getCallClient().callUser(Long.toString(member.getUserID()));
+            Log.v(TAG,"CALL IS NULL");
+            Log.v(TAG,"USERID of calling person is"+member.getUserID());
+            call=sinchClient.getCallClient().callUser("J9NS48ECgXh8ulMylPohC2MlFCt2");
             call.addCallListener(new SinchCallListener());
 
             openCallerDialog(call);
