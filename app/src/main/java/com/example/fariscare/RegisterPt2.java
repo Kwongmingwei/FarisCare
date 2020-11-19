@@ -1,11 +1,7 @@
 package com.example.fariscare;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.PostProcessor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -115,6 +114,10 @@ public class RegisterPt2 extends AppCompatActivity {
                                 //Custom message if email is invaild
                                 Log.v(TAG, "The email is invaild");
                             } else {
+                                FirebaseUser user=Auth.getCurrentUser();
+                                String id=user.getUid();
+                                member.setUserID(id);
+                                Log.v("Reg2","UID IS"+id);
                                 progressBar.setVisibility(View.INVISIBLE);
                                 //Chris - Register is successful,saving user details to firebase database
 
