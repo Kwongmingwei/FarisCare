@@ -64,7 +64,7 @@ public class RegisterPage extends AppCompatActivity {
             @SuppressLint("ShowToast")
             @Override
             public void onClick(View v) {
-                String email, password, name, confirmPassword,KEY;
+                String email, password, name, confirmPassword;
                 email = EnterEmail.getText().toString();
                 password = EnterPassword.getText().toString();
                 name = EnterName.getText().toString();
@@ -109,31 +109,28 @@ public class RegisterPage extends AppCompatActivity {
                     Toast.makeText(RegisterPage.this, "Password Do Not Match", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (confirmPassword.equals(""))//Chris - Check for empty Inputs
-                {
-                    Log.v(TAG, "Confirm Password");
-                    Toast.makeText(RegisterPage.this, "Confirm Password", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
                 else {
-                    Auth.signInWithEmailAndPassword(email, confirmPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    Auth.createUserWithEmailAndPassword(email, confirmPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //Chris - check whether register of user is successful or not
-                            if (task.isSuccessful()) {
+                            if (!task.isSuccessful()) {
                                 //Custom message if email is invaild
                                 Toast.makeText(RegisterPage.this, "The email is invaild", Toast.LENGTH_SHORT).show();
                                 Log.v(TAG, "The email is invaild");
-                            } else {
-
-                                Intent login = new Intent(RegisterPage.this, RegisterPt2.class);
-                                login.putExtra("name",name);
-                                login.putExtra("email",email);
-                                login.putExtra("password",confirmPassword);
-                                startActivity(login);
+                            }
+                            else {
+                                //Chris - check whether register of user is successful or not
+                                Intent registerpt2 = new Intent(RegisterPage.this, RegisterPt2.class);
+                                registerpt2.putExtra("name", name);
+                                registerpt2.putExtra("email", email);
+                                registerpt2.putExtra("password", confirmPassword);
+                                startActivity(registerpt2);
+                                finish();
                             }
                         }
+
                     });
                 }
             }

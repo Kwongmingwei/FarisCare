@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         user=Auth.getCurrentUser();
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Member");
 
-        Auto_login.edit().putBoolean("logged",false).apply();
+         Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
         if(Auto_login.getBoolean("logged",false)){
             databaseReference.orderByChild("email").equalTo(user.getEmail()).addValueEventListener(new ValueEventListener() {
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         //Chris - get uid from shared preferences
                         uid = Auto_login.getString("UserID", null);
-                        Log.v(TAG, "the user id sent= " + uid);
+                        Log.v(TAG,"the user id sent= " + uid);
                         Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);
                         MainActivity.putExtra("User_UID", uid);
                         startActivity(MainActivity);

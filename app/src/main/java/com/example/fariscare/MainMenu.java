@@ -8,19 +8,30 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
 
 public class MainMenu extends AppCompatActivity {
     Button emergencyButton;
     Button socialButton;
-    String eContact;
-
+    String eContact,uid;
+    TextView address,name,dob;
+    DatabaseReference databaseReference;
+    ImageView ic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,17 +39,47 @@ public class MainMenu extends AppCompatActivity {
         ActivityCompat.requestPermissions(MainMenu.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
         socialButton=(Button)findViewById(R.id.social);
         eContact = getIntent().getStringExtra("emergency");
+        ic=findViewById(R.id.imageView9);
+        name=findViewById(R.id.NameHome);
+        dob=findViewById(R.id.DOBHome);
+        address=findViewById(R.id.AddressHome);
+        Bundle bundle = getIntent().getExtras();
+        uid=bundle.getString("User_UID");
         Log.v("Menu","Emergency contact: "+eContact);
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("Member").child(uid);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String n = dataSnapshot.child("name").getValue().toString();
+                String birth = dataSnapshot.child("dob").getValue().toString();
+                String address1 = dataSnapshot.child("address").getValue().toString();
+                name.setText(n);
+                address.setText(address1);
+                dob.setText(birth);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
+            }
+        });
         socialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestAudioPermissions();
                 Intent social=new Intent(MainMenu.this,OCall.class);
                 startActivity(social);
+
             }
         });
-
+        ic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent profile=new Intent(MainMenu.this,ProfilePage.class);
+                profile.putExtra("uid", uid);
+                startActivity(profile);
+                finish();
+            }
+        });
 
         emergencyButton = (Button) findViewById(R.id.emergency);
         emergencyButton.setOnClickListener(new View.OnClickListener() {

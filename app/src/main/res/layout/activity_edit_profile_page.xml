@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2768A5"
-    tools:context=".ProfilePage">
+    tools:context=".EditProfilePage">
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -14,9 +14,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical">
 
         <TextView
@@ -33,7 +33,6 @@
             android:layout_height="105dp"
             android:layout_gravity="center"
             app:srcCompat="@drawable/image" />
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -47,7 +46,7 @@
             android:textSize="25dp"
             android:textStyle="bold"/>
         <TextView
-            android:id="@+id/Name"
+            android:id="@+id/Name1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
@@ -70,7 +69,7 @@
             android:textSize="25dp"
             android:textStyle="bold"/>
         <TextView
-            android:id="@+id/dob"
+            android:id="@+id/dob1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
@@ -94,7 +93,7 @@
             android:textSize="25dp"
             android:textStyle="bold"/>
         <TextView
-            android:id="@+id/Address"
+            android:id="@+id/Address1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
@@ -117,8 +116,8 @@
             android:text="Emergency Contact"
             android:textSize="25dp"
             android:textStyle="bold"/>/>
-        <TextView
-            android:id="@+id/emergency"
+        <EditText
+            android:id="@+id/EnterEmergency1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="0dp"
@@ -129,7 +128,7 @@
             android:padding="9dp"
             android:textSize="20dp" />
         <TextView
-            android:id="@+id/edit"
+            android:id="@+id/Confirm1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="250dp"
@@ -139,7 +138,7 @@
             android:textColor="#FFFFFF"
             android:padding="9dp"
             android:textAlignment="center"
-            android:text="Edit"
+            android:text="Confirm"
             android:textSize="20dp"
             android:textStyle="bold"/>/>
 

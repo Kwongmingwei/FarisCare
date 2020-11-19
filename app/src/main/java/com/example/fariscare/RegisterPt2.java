@@ -76,13 +76,13 @@ public class RegisterPt2 extends AppCompatActivity {
                 //Chris - Check for empty Inputs
 
                 if (phoneNo.equals("")) {
-                    Log.v(TAG, "Phone number Required");//Chris - Check for empty Inputs
-                    Toast.makeText(RegisterPt2.this, "Phone number Required", Toast.LENGTH_SHORT).show();
+                    Log.v(TAG, "Phone Number Required");//Chris - Check for empty Inputs
+                    Toast.makeText(RegisterPt2.this, "Phone Number Required", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (dob.equals("")) {
-                    Log.v(TAG, "Date of birth Required");
-                    Toast.makeText(RegisterPt2.this, "Date of birth Required", Toast.LENGTH_SHORT).show();
+                    Log.v(TAG, "Date of Birth Required");
+                    Toast.makeText(RegisterPt2.this, "Date of Birth Required", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (address.equals("")) {
@@ -93,8 +93,8 @@ public class RegisterPt2 extends AppCompatActivity {
 
                 if (postal.equals(""))//Chris - Check for empty Inputs
                 {
-                    Log.v(TAG, "Postal code Required");
-                    Toast.makeText(RegisterPt2.this, "Password Required", Toast.LENGTH_SHORT).show();
+                    Log.v(TAG, "Postal Code Required");
+                    Toast.makeText(RegisterPt2.this, "Postal Code Required", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -108,40 +108,34 @@ public class RegisterPt2 extends AppCompatActivity {
                     Auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
-                            //Chris - check whether register of user is successful or not
-                            if (!task.isSuccessful()) {
-                                progressBar.setVisibility(View.INVISIBLE);
-                                //Custom message if email is invaild
-                                Log.v(TAG, "The email is invaild");
-                            } else {
-                                FirebaseUser user=Auth.getCurrentUser();
-                                String id=user.getUid();
-                                member.setUserID(id);
-                                Log.v("Reg2","UID IS"+id);
-                                progressBar.setVisibility(View.INVISIBLE);
-                                //Chris - Register is successful,saving user details to firebase database
-
-                                member.setName(name);
-                                member.setEmail(email);
-                                member.setPassword(password);
-                                member.setPhoneNo(phoneNo);
-                                member.setAddress(address);
-                                member.setEmergencyContact("87115223");
-                                member.setRequestedItems("");
-                                member.setRequestHistory("");
-                                member.setProfilePic("");
-                                member.setPostalCode(postal);
-                                member.setAccountType("Elderly");
-                                member.setDOB(dob);
-                                //Chris -  Customised user id,make sure no two users have the same user id
-                                String idvalue = String.valueOf(maxid + 1);
-                                //Chris - Add the user to firebase database
-                                databaseReference.child(idvalue).setValue(member);
-                                Log.v(TAG, "Registered Successfully");
-                                Toast.makeText(RegisterPt2.this, "Registered Successfully", Toast.LENGTH_SHORT).show();
-                                Intent login = new Intent(RegisterPt2.this, MainActivity.class);
-                                startActivity(login);
-                            }
+                            FirebaseUser user = Auth.getCurrentUser();
+                            String id = user.getUid();
+                            member.setUserID(id);
+                            Log.v("Reg2", "UID is" + id);
+                            progressBar.setVisibility(View.INVISIBLE);
+                            //Chris - Register is successful,saving user details to firebase database
+                            member.setName(name);
+                            member.setEmail(email);
+                            member.setPassword(password);
+                            member.setPhoneNo(phoneNo);
+                            member.setAddress(address);
+                            //87115223
+                            member.setEmergencyContact("");
+                            member.setRequestedItems("");
+                            member.setRequestHistory("");
+                            member.setProfilePic("");
+                            member.setPostalCode(postal);
+                            member.setAccountType("Elderly");
+                            member.setDOB(dob);
+                            //Chris -  Customised user id,make sure no two users have the same user id
+                            String idvalue = String.valueOf(maxid + 1);
+                            //Chris - Add the user to firebase database
+                            databaseReference.child(idvalue).setValue(member);
+                            Log.v(TAG, "Registered Successfully");
+                            Toast.makeText(RegisterPt2.this, "Registered Successfully", Toast.LENGTH_SHORT).show();
+                            Intent login = new Intent(RegisterPt2.this, MainActivity.class);
+                            startActivity(login);
+                            finish();
                         }
                     });
                 }

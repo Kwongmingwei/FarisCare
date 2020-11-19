@@ -5,14 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Telephony;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,25 +16,19 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.w3c.dom.Text;
-
-public class ProfilePage extends AppCompatActivity {
-    TextView Name,DOB,Address,EmergencyContact,Edit;
-    Button RegisterButton;
-    FirebaseAuth Auth;
+public class EditProfilePage extends AppCompatActivity {
+    TextView Name,DOB,Address,EmergencyContact,ConfirmButton;
     DatabaseReference databaseReference;
-    Member member;
     String userid;
-    private static final String TAG = "ProfilePage";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_page);
-        Name=findViewById(R.id.Name);
-        Address=findViewById(R.id.Address);
-        DOB =findViewById(R.id.dob);
-        EmergencyContact=findViewById(R.id.emergency);
-        Edit=findViewById(R.id.edit);
+        setContentView(R.layout.activity_edit_profile_page);
+        Name=findViewById(R.id.Name1);
+        Address=findViewById(R.id.Address1);
+        DOB =findViewById(R.id.dob1);
+        EmergencyContact=findViewById(R.id.EnterEmergency1);
+        ConfirmButton=findViewById(R.id.Confirm1);
         Bundle bundle = getIntent().getExtras();
         userid=bundle.getString("uid");
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Member").child(userid);
@@ -62,14 +51,18 @@ public class ProfilePage extends AppCompatActivity {
 
             }
         });
-        Edit.setOnClickListener(new View.OnClickListener() {
+        ConfirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent EditProfile=new Intent(ProfilePage.this,EditProfilePage.class);
-                EditProfile.putExtra("uid", userid);
-                startActivity(EditProfile);
+                String NewContact;
+                NewContact = EmergencyContact.getText().toString();
+                FirebaseDatabase.getInstance().getReference().child("Member").child(userid).child("emergencyContact").setValue(NewContact);
+                Intent GoBackToProfile=new Intent(EditProfilePage.this,ProfilePage.class);
+                GoBackToProfile.putExtra("uid", userid);
+                startActivity(GoBackToProfile);
                 finish();
             }
         });
+
     }
 }
