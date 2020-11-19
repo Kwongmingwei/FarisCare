@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2768A5"
+    tools:context=".RegisterPage"> <!--CONTEXT HAS TO BE CHANGED-->
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="50dp"
+        android:orientation="vertical">
+        <FrameLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#282826"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="0dp"/> <!--Top bar-->
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginVertical="5dp"
+                app:srcCompat="@drawable/ic_baseline_keyboard_backspace_24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="0dp"
+                android:text="Settings"
+                android:textColor="#FFF"
+                android:textSize="30dp"
+                android:textStyle="bold" /> <!--TEXT-->
+
+        </FrameLayout> <!--FrameLayout used to place text in front of top bar-->
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="145dp"
+            android:layout_height="145dp"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/goldcare" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            android:text="Volunteer Code"
+            android:textColor="#FFD246"
+            android:textSize="40dp"
+            android:layout_gravity="center"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/Code"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="center"
+            android:drawablePadding="12dp"
+            android:background="#ffff"
+            android:hint="Code"
+            android:inputType="textPassword"
+            android:padding="9dp"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/RegisterButton"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:background="@drawable/rounded"
+            android:text="Next"
+            android:textAllCaps="false"
+            android:textColor="#FFF"
+            android:textSize="20dp" />
+
+        <Button
+            android:id="@+id/Back"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="25dp"
+            android:background="@drawable/rounded"
+            android:text="Back"
+            android:textAllCaps="false"
+            android:textColor="#FFF"
+            android:textSize="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="#282826"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="0dp"/> <!--Horizontal Line-->
+
+        <!--SYMBOLS OF NAVBAR BELOW-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginVertical="7.5dp"
+                app:srcCompat="@drawable/ic_baseline_home_24" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="58dp"
+                android:layout_marginVertical="7.5dp"
+                app:srcCompat="@drawable/ic_baseline_shopping_basket_24" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginVertical="7.5dp"
+                app:srcCompat="@drawable/ic_baseline_phone_24" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
