@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     String uid;
     DatabaseReference databaseReference;
     ProgressBar progressBar;
-    //jj-constructors to get the context of the login page from other fragments
+
     public MainActivity(Context context)
     {
         logincontext=context;
@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
-        Auto_login.edit().putBoolean("logged", false).apply();
         if(Auto_login.getBoolean("logged",false)){
             databaseReference.orderByChild("email").equalTo(user.getEmail()).addValueEventListener(new ValueEventListener() {
                 @Override

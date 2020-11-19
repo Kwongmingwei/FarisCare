@@ -5,44 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2768A5"
+    android:layout_gravity="center"
     tools:context=".MainMenu">
 
-    <Button
-        android:id="@+id/groceries"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="38dp"
-        android:layout_marginTop="385dp"
-        android:width="150dp"
-        android:height="150dp"
-        android:text="Groceries" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/social"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/groceries"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="-182dp"
-        android:width="150dp"
-        android:height="150dp"
-        android:text="Social" />
+        <Button
+            android:id="@+id/emergency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:width="150dp"
+            android:height="150dp"
+            android:text="EMERGENCY"
+            app:layout_constraintBottom_toTopOf="@+id/social"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/groceries" />
 
-    <Button
-        android:id="@+id/emergency"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/social"
-        android:layout_alignParentStart="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="214dp"
-        android:layout_marginTop="18dp"
+        <Button
+            android:id="@+id/groceries"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:width="150dp"
+            android:height="150dp"
+            android:text="Groceries"
+            app:layout_constraintBottom_toBottomOf="@+id/emergency"
+            app:layout_constraintEnd_toStartOf="@+id/emergency"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/emergency" />
 
-        android:layout_marginBottom="169dp"
-        android:width="150dp"
-        android:height="150dp"
-        android:text="EMERGENCY" />
+        <Button
+            android:id="@+id/social"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:width="150dp"
+            android:height="150dp"
+            android:text="Social"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>
