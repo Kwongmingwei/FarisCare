@@ -92,18 +92,7 @@
             android:padding="9dp"
             android:textSize="20dp" />
 
-        <!--<EditText
-            android:id="@+id/Enter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="10dp"
-            android:drawablePadding="12dp"
-            android:background="#ffff"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:padding="9dp"
-            android:textSize="20dp" />-->
+
 
         <Button
             android:id="@+id/RegisterButton"

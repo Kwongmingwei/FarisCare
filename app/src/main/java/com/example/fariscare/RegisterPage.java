@@ -30,7 +30,6 @@ public class RegisterPage extends AppCompatActivity {
     DatabaseReference databaseReference;
     Member member;
     String number;
-    ProgressBar progressBar;
     long maxid=0;
     private static final String TAG = "RegisterPage";
     @Override
@@ -42,7 +41,6 @@ public class RegisterPage extends AppCompatActivity {
         EnterPassword=findViewById(R.id.EnterPassword);
         ConfirmPassword=findViewById(R.id.ConfirmPassword);
         RegisterButton=findViewById(R.id.RegisterButton);
-        progressBar =  findViewById(R.id.progressBar);
 
         Auth = FirebaseAuth.getInstance();
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Member");
@@ -119,20 +117,18 @@ public class RegisterPage extends AppCompatActivity {
                 }
 
                 else {
-                    progressBar.setVisibility(View.VISIBLE);//Chris - For user to know that the data is being processed
-                    //Authentication
                     Auth.signInWithEmailAndPassword(email, confirmPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             //Chris - check whether register of user is successful or not
                             if (task.isSuccessful()) {
-                                progressBar.setVisibility(View.INVISIBLE);
                                 //Custom message if email is invaild
                                 Toast.makeText(RegisterPage.this, "The email is invaild", Toast.LENGTH_SHORT).show();
                                 Log.v(TAG, "The email is invaild");
                             } else {
-                                progressBar.setVisibility(View.INVISIBLE);
+
                                 Intent login = new Intent(RegisterPage.this, RegisterPt2.class);
+                                login.putExtra("name",name);
                                 login.putExtra("email",email);
                                 login.putExtra("password",confirmPassword);
                                 startActivity(login);

@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         user=Auth.getCurrentUser();
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Member");
 
-        //Auto_login.edit().putBoolean("logged",false).apply();
+        Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
         if(Auto_login.getBoolean("logged",false)){
             databaseReference.orderByChild("email").equalTo(user.getEmail()).addValueEventListener(new ValueEventListener() {
@@ -79,11 +79,8 @@ public class MainActivity extends AppCompatActivity {
                         //Chris - get uid from shared preferences
                         uid = Auto_login.getString("UserID", null);
                         Log.v(TAG, "the user id sent= " + uid);
-                        Bundle bundle = new Bundle();
-                        bundle.putString("User_UID", uid);
                         Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);
-                        MainActivity.putExtra("User_UID", bundle);
-                        Log.v(TAG, "sending this uid to main activity " + uid);
+                        MainActivity.putExtra("User_UID", uid);
                         startActivity(MainActivity);
                         finish();
                     }
@@ -139,21 +136,17 @@ public class MainActivity extends AppCompatActivity {
                                         //Chris - show that it works
                                         Log.v(TAG, "the user id sent= " + uid);
 
-                                        //Chris -  save user id as bundle
-                                        Bundle bundle = new Bundle();
-                                        bundle.putString("User_UID", uid);
-                                        bundle.putString("email", email);
                                         //Chris -  save user id in shared preference
                                         SharedPreferences.Editor editor = Auto_login.edit();
                                         editor.putString("UserID", uid).apply();
                                         //Chris - if login is successful
                                         //Chris - Intent to homepage and pass user id to it
                                         Intent ToMenuPage = new Intent(MainActivity.this, MainMenu.class);
-                                        ToMenuPage.putExtra("User_UID", bundle);
-                                        ToMenuPage.putExtra("email", bundle);
+                                        ToMenuPage.putExtra("User_UID", uid);
                                         Auto_login.edit().putBoolean("logged", true).apply();
                                         Log.v(TAG, "sending this uid to main activity " + uid);
                                         startActivity(ToMenuPage);
+                                        finish();
 
 
                                     }

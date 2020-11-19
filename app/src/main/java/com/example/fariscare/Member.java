@@ -12,7 +12,7 @@ public class Member {
     private String ProfilePic;
     private String PostalCode;
     private String AccountType;
-
+    private String DOB;
 
     public Member() {
     }
@@ -98,6 +98,14 @@ public class Member {
 
     public void setAccountType(String accountType) {
         AccountType = accountType;
+    }
+
+    public String getDOB() {
+        return DOB;
+    }
+
+    public void setDOB(String dob) {
+        DOB = dob;
     }
 
 }
