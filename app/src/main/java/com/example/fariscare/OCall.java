@@ -1,13 +1,16 @@
 package com.example.fariscare;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.fariscare.Adapters.AllUsersAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OCall extends AppCompatActivity {
+
+    final static String TAG = "OCall.java";
 
     RecyclerView contactsRecycler;
     FirebaseAuth auth;
@@ -51,10 +56,12 @@ public class OCall extends AppCompatActivity {
         firebaseUser =auth.getCurrentUser();
 
 
+
+
         sinchClient= Sinch.getSinchClientBuilder().context(this)
                 .userId(firebaseUser.getUid())
-                .applicationKey("")
-                .applicationSecret("").environmentHost("").build();
+                .applicationKey("63cc94ee-d4f8-4805-8938-6067e98fc8fa")
+                .applicationSecret("t1FsM6t2k0+Pq8hKPzW3sQ==").environmentHost("clientapi.sinch.com").build();
 
         sinchClient.setSupportCalling(true);
         sinchClient.startListeningOnActiveConnection();
@@ -75,15 +82,18 @@ public class OCall extends AppCompatActivity {
                 memberArrayList.clear();
                 for (DataSnapshot des:dataSnapshot.getChildren()){
                     Member member=des.getValue(Member.class);
-
                     memberArrayList.add(member);
                 }
 
+
+                AllUsersAdapter adapter=new AllUsersAdapter(OCall.this,memberArrayList);
+                contactsRecycler.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -115,11 +125,57 @@ public class OCall extends AppCompatActivity {
     }
 
 
+
+
     private class SinchCallClientListener implements CallClientListener{
 
         @Override
-        public void onIncomingCall(CallClient callClient, Call call) {
+        public void onIncomingCall(CallClient callClient, final Call incomingcall) {
 
+            AlertDialog alertDialog =new AlertDialog.Builder(OCall.this).create();
+            alertDialog.setTitle("Calling...");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Reject", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    call.hangup();
+                }
+            });
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Pick up", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    call=incomingcall;
+                    call.answer();
+                    call.addCallListener(new SinchCallListener());
+                    Toast.makeText(getApplicationContext(),"Call is answered",Toast.LENGTH_LONG).show();
+                }
+            });
+
+            alertDialog.show();
         }
+    }
+
+    public void callUser(Member member){
+        if (call== null){
+            call=sinchClient.getCallClient().callUser(Long.toString(member.getUserID()));
+            call.addCallListener(new SinchCallListener());
+
+            openCallerDialog(call);
+        }
+    }
+
+    private void openCallerDialog(final Call call){
+        AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
+        alertDialogCall.setTitle("Alert");
+        alertDialogCall.setMessage("Calling...");
+        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "HANG UP", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                call.hangup();
+            }
+        });
+
+        alertDialogCall.show();
     }
 }

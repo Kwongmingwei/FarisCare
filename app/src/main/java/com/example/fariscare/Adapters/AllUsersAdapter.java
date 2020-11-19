@@ -1,6 +1,7 @@
 package com.example.fariscare.Adapters;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fariscare.Member;
+import com.example.fariscare.OCall;
 import com.example.fariscare.R;
 
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ public class AllUsersAdapter extends RecyclerView.Adapter<AllUsersAdapter.AllUse
     public void onBindViewHolder(@NonNull AllUsersViewHolder holder, int position) {
         Member member=memberArrayList.get(position);
         holder.textViewName.setText(member.getName());
+        Log.v("Adapter",member.getName());
 
     }
 
@@ -54,6 +57,13 @@ public class AllUsersAdapter extends RecyclerView.Adapter<AllUsersAdapter.AllUse
             textViewName=(TextView)itemView.findViewById(R.id.itemName);
             button=itemView.findViewById(R.id.callButton);
 
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Member member=memberArrayList.get(getAdapterPosition());
+                    ((OCall)context).callUser(member);
+                }
+            });
         }
     }
 
