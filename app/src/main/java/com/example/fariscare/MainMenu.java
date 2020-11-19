@@ -14,6 +14,8 @@ public class MainMenu extends AppCompatActivity {
     Button emergencyButton;
     Button socialButton;
     String uid;
+    Member member;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,7 @@ public class MainMenu extends AppCompatActivity {
         emergencyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + "87487930"));
+                Intent call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + member.getEmergencyContact()));
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions

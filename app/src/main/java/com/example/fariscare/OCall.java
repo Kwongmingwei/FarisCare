@@ -171,7 +171,7 @@ public class OCall extends AppCompatActivity {
         if (call== null){
             Log.v(TAG,"CALL IS NULL");
             Log.v(TAG,"USERID of calling person is"+member.getUserID());
-            call=sinchClient.getCallClient().callUser("J9NS48ECgXh8ulMylPohC2MlFCt2");
+            call=sinchClient.getCallClient().callUser(member.getUserID());
             call.addCallListener(new SinchCallListener());
 
             openCallerDialog(call);
