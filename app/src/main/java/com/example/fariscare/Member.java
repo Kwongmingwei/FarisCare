@@ -11,6 +11,7 @@ public class Member {
     private String RequestHistory;
     private String ProfilePic;
     private String PostalCode;
+    private String AccountType;
 
 
     public Member() {
@@ -84,12 +85,19 @@ public class Member {
 
     public void setProfilePic(String profilePic) { ProfilePic = profilePic; }
 
-    public String getPostalCode() {
-        return PostalCode;
+    public String getPostalCode() { return PostalCode;
     }
 
     public void setPostalCode(String postalCode) {
         PostalCode = postalCode;
+    }
+
+    public String getAccountType() {
+        return AccountType;
+    }
+
+    public void setAccountType(String accountType) {
+        AccountType = accountType;
     }
 
 }

@@ -73,17 +73,17 @@ public class RegisterPt2 extends AppCompatActivity {
                 postal = PostalCode.getText().toString();
                 //Chris - Verification for inputs
                 //Chris - Check for empty Inputs
-                if (address.equals("")) {
-                    Log.v(TAG, "Address Required");
-                    Toast.makeText(RegisterPt2.this, "Address Required", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+
                 if (phoneNo.equals("")) {
                     Log.v(TAG, "Phone number Required");//Chris - Check for empty Inputs
                     Toast.makeText(RegisterPt2.this, "Phone number Required", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
+                if (address.equals("")) {
+                    Log.v(TAG, "Address Required");
+                    Toast.makeText(RegisterPt2.this, "Address Required", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 if (postal.equals(""))//Chris - Check for empty Inputs
                 {
@@ -107,7 +107,6 @@ public class RegisterPt2 extends AppCompatActivity {
                             if (!task.isSuccessful()) {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 //Custom message if email is invaild
-                                Toast.makeText(RegisterPt2.this, "The email is invaild", Toast.LENGTH_SHORT).show();
                                 Log.v(TAG, "The email is invaild");
                             } else {
                                 progressBar.setVisibility(View.INVISIBLE);
@@ -124,6 +123,7 @@ public class RegisterPt2 extends AppCompatActivity {
                                 member.setRequestHistory("");
                                 member.setProfilePic("");
                                 member.setPostalCode(postal);
+                                member.setAccountType("Elderly");
 
                                 //Chris -  Customised user id,make sure no two users have the same user id
                                 String idvalue = String.valueOf(maxid + 1);
