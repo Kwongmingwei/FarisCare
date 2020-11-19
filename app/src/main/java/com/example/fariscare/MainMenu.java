@@ -31,7 +31,7 @@ public class MainMenu extends AppCompatActivity {
     String eContact,uid;
     TextView address,name,dob;
     DatabaseReference databaseReference;
-    ImageView ic;
+    ImageView ic,call;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +43,7 @@ public class MainMenu extends AppCompatActivity {
         name=findViewById(R.id.NameHome);
         dob=findViewById(R.id.DOBHome);
         address=findViewById(R.id.AddressHome);
+        call=findViewById(R.id.imageView4);
         Bundle bundle = getIntent().getExtras();
         uid=bundle.getString("User_UID");
         Log.v("Menu","Emergency contact: "+eContact);
@@ -62,6 +63,14 @@ public class MainMenu extends AppCompatActivity {
 
             }
         });
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestAudioPermissions();
+                Intent social = new Intent(MainMenu.this, OCall.class);
+                startActivity(social);
+            }
+            });
         socialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
