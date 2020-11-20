@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar =  findViewById(R.id.progressBar);
         user=Auth.getCurrentUser();
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Member");
-
+    //chris
         //Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
         if(Auto_login.getBoolean("logged",false)){
