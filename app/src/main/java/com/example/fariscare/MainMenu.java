@@ -28,6 +28,7 @@ import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.N
 public class MainMenu extends AppCompatActivity {
     Button emergencyButton;
     Button socialButton;
+    Button apiButton;
     String eContact,uid;
     TextView address,name,dob;
     DatabaseReference databaseReference;
@@ -37,6 +38,7 @@ public class MainMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         ActivityCompat.requestPermissions(MainMenu.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
+        apiButton=(Button)findViewById(R.id.groceries);
         socialButton=(Button)findViewById(R.id.social);
         eContact = getIntent().getStringExtra("emergency");
         ic=findViewById(R.id.imageView9);
@@ -71,6 +73,15 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(social);
             }
             });
+
+        apiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent covidApi = new Intent(MainMenu.this, ApiPage.class);
+                startActivity(covidApi);
+            }
+        });
+
         socialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
