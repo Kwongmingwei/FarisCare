@@ -1,25 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2768A5"
     tools:context=".ApiPage"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:orientation="vertical">
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/text_view_result"
-            android:layout_width="wrap_content"
+    <!--First rounded thing-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/rounded"
+            android:layout_margin="20dp"
+            >
+
+            <!--Current active-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="20dp"
+                >
+                <TextView
+                    android:id="@+id/cActive"
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="Current Active Cases: "
+                    android:textColor="#FFFFFF"/>
+                <TextView
+                    android:id="@+id/cActiveNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:gravity="center"
+                    android:textColor="#FFD246"
+                    android:text="-"
+                    app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+
+            <!--Stable-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="20dp"
+                >
+                <TextView
+                    android:id="@+id/stable"
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="Current Stable Cases: "
+                    android:textColor="#FFFFFF"/>
+                <TextView
+                    android:id="@+id/stableNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:gravity="center"
+                    android:textColor="#FFD246"
+                    android:text="-"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+
+            <!--Crictical-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="20dp"
+                >
+                <TextView
+                    android:id="@+id/crictical"
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="Current Crictical Cases:  "
+                    android:textColor="#FFFFFF"/>
+                <TextView
+                    android:id="@+id/cricticalNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:gravity="center"
+                    android:textColor="#FFD246"
+                    android:text="-"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+
+            <!--Total infected-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="20dp"
+                >
+                <TextView
+                    android:id="@+id/totalInfected"
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="Total Infected Cases: "
+                    android:textColor="#FFFFFF"/>
+                <TextView
+                    android:id="@+id/totalInfectedNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:gravity="center"
+                    android:textColor="#FFD246"
+                    android:text="-"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <!--Total deceased-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="20dp"
+                >
+                <TextView
+                    android:id="@+id/totalDeceased"
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="Total Deceased Cases: "
+                    android:textColor="#FFFFFF"/>
+                <TextView
+                    android:id="@+id/totalDeceasedNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:gravity="center"
+                    android:textColor="#FFD246"
+                    android:text="-"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <!--Total recovered-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="20dp"
+                >
+                <TextView
+                    android:id="@+id/totalRecovered"
+                    android:layout_width="175dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="Total Recovered Cases: "
+                    android:textColor="#FFFFFF"/>
+                <TextView
+                    android:id="@+id/totalRecoveredNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    android:gravity="center"
+                    android:textColor="#FFD246"
+                    android:text="-"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    <!--Second rounded thing (below)-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/rounded"
+            android:layout_margin="20dp"
+            android:layout_marginTop="50dp">
+
+            <TextView
+            android:id="@+id/lastUpdated"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:text="Last Updated On"
+            android:textColor="#FFFFFF"
+            android:gravity="center"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
 
-    </androidx.core.widget.NestedScrollView>
+            <TextView
+                android:id="@+id/lastUpdatedNo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:text="-"
+                android:textColor="#FFD246"
+                android:gravity="center"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+
+
+
+
+</LinearLayout>

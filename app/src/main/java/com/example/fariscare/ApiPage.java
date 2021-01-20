@@ -16,14 +16,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiPage extends AppCompatActivity {
 
-    private TextView textView;
+    private TextView cActive;
+    private TextView stable;
+    private TextView crictical;
+    private TextView totalInfected;
+    private TextView totalDeceased;
+    private TextView totalRecovered;
+    private TextView lastUpdated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_api_page);
 
-        textView=findViewById(R.id.text_view_result);
+
+
+        cActive=findViewById(R.id.cActiveNo);
+        stable=findViewById(R.id.stableNo);
+        crictical=findViewById(R.id.cricticalNo);
+        totalInfected=findViewById(R.id.totalInfectedNo);
+        totalDeceased=findViewById(R.id.totalDeceasedNo);
+        totalRecovered=findViewById(R.id.totalRecoveredNo);
+        lastUpdated=findViewById(R.id.lastUpdatedNo);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(1, TimeUnit.MINUTES)
                 .readTimeout(1,TimeUnit.MINUTES)
@@ -40,27 +54,25 @@ public class ApiPage extends AppCompatActivity {
             @Override
             public void onResponse(Call<Post> call, Response<Post> response) {
                 if (!response.isSuccessful()){
-                    textView.setText("Code: "+response.code());
+                    lastUpdated.setText("Code: "+response.code());
                     return;
                 }
 
                 Post posts=response.body();
 
-                String content="";
-                content+="Current active cases: "+posts.getActiveCases()+"\n";
-                content+="Stable hospitalized: "+posts.getStableHospitalized()+"\n";
-                content+="Current critical patients hospitalized: "+posts.getCriticalHospitalized()+"\n";
-                content+="Total infected: "+posts.getInfected()+"\n";
-                content+="Total deceased: "+posts.getDeceased()+"\n";
-                content+="Total recovered: "+posts.getRecovered()+"\n";
-                content+="Last Updated: "+posts.getLastUpdatedAtApify()+"\n\n";
-                textView.setText(content);
+                cActive.setText(posts.getActiveCases());
+                stable.setText(posts.getStableHospitalized());
+                crictical.setText(posts.getCriticalHospitalized());
+                totalInfected.setText(posts.getInfected());
+                totalDeceased.setText(posts.getDeceased());
+                totalRecovered.setText(posts.getRecovered());
+                lastUpdated.setText(posts.getLastUpdatedAtApify());
 
             }
 
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
-                textView.setText(t.getMessage());
+                lastUpdated.setText(t.getMessage());
             }
         });
     }
