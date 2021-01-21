@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.EventLog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.fariscare.Adapters.EventItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -26,8 +30,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG="Recycler View ItemList";
+    private ArrayList<EventItem> mItemList; //Keith
+    private RecyclerView mRecyclerView; //Contain recycler view recreated in XML layout
+    private EventAdapter mAdapter; //Bridge between Arraylist and recyclerview
+    private RecyclerView.LayoutManager mLayoutManager; //Responsible for aligning items in Arraylist
+    private Button buttonInsert; //Keith
+    private Button buttonRemove; //Keith
+    private EditText editTextInsert;
+    private EditText editTextRemove;
     public Context logincontext;
     Button loginbutton;
     TextView register;
@@ -178,6 +192,73 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent RegisterIntent=new Intent(MainActivity.this,RegisterPage.class);
                 startActivity(RegisterIntent);
+            }
+        });
+
+        //----------------------------------------------------------------------------------------------------------------------------------
+        //Recyclerview for events-----------------------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------------------------------
+        createItemList();
+        buildRecyclerView();
+
+        buttonInsert = findViewById(R.id.button_insert);
+        buttonRemove = findViewById(R.id.button_remove);
+        editTextInsert = findViewById(R.id.edittext_insert);
+        editTextRemove = findViewById(R.id.edittext_remove);
+
+        buttonInsert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = Integer.parseInt(editTextInsert.getText().toString());
+                insertItem(position);
+            }
+        });
+
+        buttonRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = Integer.parseInt(editTextRemove.getText().toString());
+                removeItem(position);
+            }
+        });
+
+    }
+
+    public void insertItem(int position) {
+        mItemList.add(position, new EventItem(R.drawable.ic_test_img, "New Item At Position" + position, "This is Line 2"));
+        mAdapter.notifyItemInserted(position);
+    }
+
+    public void removeItem(int position) {
+        mItemList.remove(position);
+        mAdapter.notifyItemRemoved(position);
+    }
+
+    public void changeItem(int position, String text) {
+        mItemList.get(position).changeText1(text);
+        mAdapter.notifyItemChanged(position);
+    }
+
+    public void createItemList() {
+        mItemList = new ArrayList<>();
+        mItemList.add(new EventItem(R.drawable.ic_test_img, "Line 1", "Line 2"));
+        mItemList.add(new EventItem(R.drawable.ic_test_img2, "Line 3", "Line 4"));
+        mItemList.add(new EventItem(R.drawable.ic_test_img3, "Line 5", "Line 6"));
+    }
+
+    public void buildRecyclerView() {
+        mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new EventAdapter(mItemList);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mAdapter.setOnItemClickListener(new EventAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                changeItem(position, "Clicked");
             }
         });
     }
