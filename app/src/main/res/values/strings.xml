@@ -1,3 +1,50 @@
 <resources>
     <string name="app_name">FarisCare</string>
+    <string name="title_activity_call_screen" translatable="false">call_screen</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment" translatable="false">Hello first fragment</string>
+    <string name="hello_second_fragment" translatable="false">Hello second fragment. Arg: %1$s</string>
+    <string name="Name">Name</string>
+    <string name="Date_Of_Birth">Date Of Birth</string>
+    <string name="Address">Address</string>
+    <string name="Emergency_Contact">Emergency Contact</string>
+    <string name="Profile">Profile</string>
+    <string name="Volunteer_Code">Volunteer Code</string>
+    <string name="Email">Email</string>
+    <string name="Password">Password</string>
+    <string name="ConfirmPassword">Confirm Password</string>
+    <string name="Next">Next</string>
+    <string name="Edit">Edit</string>
+    <string name="CreateAccount">Create Account</string>
+    <string name="PhoneNumber">Phone Number</string>
+    <string name="PostalCode" >Postal Code</string>
+    <string name="Register" >Register</string>
+    <string name="Wecareforyou">We care for you</string>
+    <string name="Username">Username</string>
+    <string name="SignIn" >Sign In</string>
+    <string name="donthaveaccount">Don\'t have an account?</string>
+    <string name="Confirm">Confirm</string>
+    <string name="Call">Call</string>
+    <string name="Back">Back</string>
+    <string name="CurrentActiveCases">Current Active Cases:</string>
+    <string name="CurrentStableCases">Current Stable Cases:</string>
+    <string name="CurrentCriticalCases">Current Critical Cases:</string>
+    <string name="TotalInfectedCases">"Total Infected Cases: "</string>
+    <string name="TotalDeceasedCases">"Total Deceased Cases: "</string>
+    <string name="TotalRecoveredCases">"Total Recovered Cases: "</string>
+    <string name="LastUpdatedOn">Last Updated On:</string>
+    <string name="ChangeLanguage">Change Language</string>
+    <string-array name="languages">
+        <item>Select Language:</item>
+        <item>English</item>
+        <item>Chinese</item>
+        <item>Malay</item>
+        <item>Tamil</item>
+    </string-array>
+
 </resources>

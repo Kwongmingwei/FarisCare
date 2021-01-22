@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center"
-            android:text="Create Account"
+            android:text="@string/CreateAccount"
             android:textColor="#FFD246"
             android:textSize="40dp"
             android:textStyle="bold" />
@@ -45,7 +45,7 @@
             android:layout_marginTop="10dp"
             android:drawablePadding="12dp"
             android:background="#ffff"
-            android:hint="Phone Number"
+            android:hint="@string/PhoneNumber"
             android:padding="9dp"
             android:textSize="20dp" />
 
@@ -59,7 +59,7 @@
             android:layout_marginTop="10dp"
             android:drawablePadding="12dp"
             android:background="#ffff"
-            android:hint="Date of birth"
+            android:hint="@string/Date_Of_Birth"
             android:padding="9dp"
             android:textSize="20dp" />
 
@@ -73,7 +73,7 @@
             android:layout_marginTop="10dp"
             android:drawablePadding="12dp"
             android:background="#ffff"
-            android:hint="Address"
+            android:hint="@string/Address"
             android:padding="9dp"
             android:textSize="20dp" />
 
@@ -86,7 +86,7 @@
             android:layout_marginTop="10dp"
             android:drawablePadding="12dp"
             android:background="#ffff"
-            android:hint="Postal Code"
+            android:hint="@string/PostalCode"
             android:padding="9dp"
             android:textSize="20dp" />
 
@@ -98,7 +98,7 @@
             android:layout_gravity="center"
             android:layout_margin="15dp"
             android:background="@drawable/rounded"
-            android:text="Register"
+            android:text="@string/Register"
             android:textAllCaps="false"
             android:textColor="#FFF"
             android:textSize="20dp" />

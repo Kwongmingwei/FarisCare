@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FarisCare</string>
+    <string name="Name">全名</string>
+    <string name="Date_Of_Birth">出生日期</string>
+    <string name="Address">地址</string>
+    <string name="Emergency_Contact">"紧急联系人 "</string>
+    <string name="Profile">个人资料</string>
+    <string name="Volunteer_Code">义工守则</string>
+    <string name="Email">电子邮件</string>
+    <string name="Password">密码</string>
+    <string name="ConfirmPassword">确认密码</string>
+    <string name="Next">下一个</string>
+    <string name="Edit">后退</string>
+    <string name="CreateAccount">创建帐号</string>
+    <string name="PhoneNumber">电话号码</string>
+    <string name="PostalCode">邮政编码</string>
+    <string name="Register">注册</string>
+    <string name="Wecareforyou">我们在乎你</string>
+    <string name="Username">用户名</string>
+    <string name="SignIn">登入</string>
+    <string name="donthaveaccount">没有帐号?</string>
+    <string name="Confirm">确认</string>
+    <string name="Call">打电话</string>
+    <string name="Back">后退</string>
+    <string name="next">下一个</string>
+    <string name="previous">后退</string>
+    <string-array name="languages">
+        <item>Select Language:</item>
+        <item>English</item>
+        <item>Chinese</item>
+        <item>Malay</item>
+        <item>Tamil</item>
+    </string-array>
+    <string name="CurrentActiveCases">当前活跃案例:</string>
+    <string name="CurrentStableCases">当前稳定的病例:</string>
+    <string name="CurrentCriticalCases">当前的紧急病例:</string>
+    <string name="TotalInfectedCases">重大活跃病例:</string>
+    <string name="TotalDeceasedCases">重大稳定的病例:</string>
+    <string name="TotalRecoveredCases">重大的紧急病例:</string>
+    <string name="LastUpdatedOn">上次更新时间:</string>
+    <string name="ChangeLanguage">"改变语言 "</string>
+</resources>

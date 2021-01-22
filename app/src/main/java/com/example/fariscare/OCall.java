@@ -1,8 +1,15 @@
 package com.example.fariscare;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -158,6 +165,8 @@ public class OCall extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     call=incomingcall;
+                    AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+                    audioManager.setMode(AudioManager.MODE_IN_CALL);
                     call.answer();
                     call.addCallListener(new SinchCallListener());
                     Toast.makeText(getApplicationContext(),"Call is answered",Toast.LENGTH_LONG).show();
@@ -175,14 +184,43 @@ public class OCall extends AppCompatActivity {
             call=sinchClient.getCallClient().callUser(member.getUserID());
             call.addCallListener(new SinchCallListener());
 
-            openCallerDialog(call);
+            openCallerDialog(call, member);
         }
     }
 
-    private void openCallerDialog(final Call call){
+    private void openCallerDialog(final Call call, Member member){
+        /**
         AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
         alertDialogCall.setTitle("Alert");
         alertDialogCall.setMessage("Calling...");
+        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "SPEAKER TOGGLE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                if (audioManager.isSpeakerphoneOn()){
+                    audioManager.setSpeakerphoneOn(false);
+                    Toast.makeText(getApplicationContext(),"Speakerphone off",Toast.LENGTH_LONG).show();
+                }
+                else{
+                    audioManager.setSpeakerphoneOn(true);
+                    Toast.makeText(getApplicationContext(),"Speakerphone on",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "MIC TOGGLE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                if (audioManager.isMicrophoneMute()){
+                    audioManager.setMicrophoneMute(false);
+                    Toast.makeText(getApplicationContext(),"Mic On",Toast.LENGTH_LONG).show();
+                }
+                else{
+                    audioManager.setMicrophoneMute(true);
+                    Toast.makeText(getApplicationContext(),"Mic off",Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "HANG UP", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -191,6 +229,40 @@ public class OCall extends AppCompatActivity {
             }
         });
 
+
+        alertDialogCall.show(); **/
+
+        //Faris Call UI
+        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMode(AudioManager.MODE_IN_CALL);
+        AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.activity_call_screen, null);
+        alertDialogCall.setView(view);
+        Button hangup = (Button)findViewById(R.id.hangup);
+        ImageButton speaker = (ImageButton)findViewById(R.id.speaker);
+        TextView name = (TextView)findViewById(R.id.name);
+        hangup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialogCall.dismiss();
+                call.hangup();
+            }
+        });
+        speaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                if (audioManager.isSpeakerphoneOn()){
+                    audioManager.setSpeakerphoneOn(false);
+                }
+                else{
+                    audioManager.setSpeakerphoneOn(true);
+                }
+
+            }
+        });
+        name.setText(member.getName());
         alertDialogCall.show();
     }
 }

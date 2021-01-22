@@ -34,7 +34,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Current Active Cases: "
+                    android:text="@string/CurrentActiveCases"
                     android:textColor="#FFFFFF"/>
                 <TextView
                     android:id="@+id/cActiveNo"
@@ -64,7 +64,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Current Stable Cases: "
+                    android:text="@string/CurrentStableCases"
                     android:textColor="#FFFFFF"/>
                 <TextView
                     android:id="@+id/stableNo"
@@ -95,7 +95,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Current Crictical Cases:  "
+                    android:text="@string/CurrentCriticalCases"
                     android:textColor="#FFFFFF"/>
                 <TextView
                     android:id="@+id/cricticalNo"
@@ -126,7 +126,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Total Infected Cases: "
+                    android:text="@string/TotalInfectedCases"
                     android:textColor="#FFFFFF"/>
                 <TextView
                     android:id="@+id/totalInfectedNo"
@@ -156,7 +156,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Total Deceased Cases: "
+                    android:text="@string/TotalDeceasedCases"
                     android:textColor="#FFFFFF"/>
                 <TextView
                     android:id="@+id/totalDeceasedNo"
@@ -186,7 +186,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="Total Recovered Cases: "
+                    android:text="@string/TotalRecoveredCases"
                     android:textColor="#FFFFFF"/>
                 <TextView
                     android:id="@+id/totalRecoveredNo"
@@ -221,7 +221,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:text="Last Updated On"
+            android:text="@string/LastUpdatedOn"
             android:textColor="#FFFFFF"
             android:gravity="center"
             app:layout_constraintTop_toTopOf="parent"

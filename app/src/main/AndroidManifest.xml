@@ -16,7 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ApiPage"></activity>
+        <activity
+            android:name=".CallScreen"
+            android:label="@string/title_activity_call_screen"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".ApiPage" />
         <activity android:name=".EditProfilePage" />
         <activity android:name=".ProfilePage" />
         <activity android:name=".RegisterPt2" />

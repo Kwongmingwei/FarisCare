@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Create Account"
+            android:text="@string/CreateAccount"
             android:textColor="#FFD246"
             android:textSize="40dp"
             android:layout_gravity="center"
@@ -45,7 +45,7 @@
             android:layout_gravity="center"
             android:drawablePadding="12dp"
             android:background="#ffff"
-            android:hint="Name"
+            android:hint="@string/Name"
             android:inputType="textPersonName"
             android:padding="9dp"
             android:textSize="20dp" />
@@ -59,7 +59,7 @@
             android:layout_gravity="center"
             android:drawablePadding="12dp"
             android:background="#ffff"
-            android:hint="Email"
+            android:hint="@string/Email"
             android:inputType="textEmailAddress"
             android:padding="9dp"
             android:textSize="20dp" />
@@ -73,7 +73,7 @@
             android:layout_gravity="center"
             android:drawablePadding="12dp"
             android:background="#ffff"
-            android:hint="Password"
+            android:hint="@string/Password"
             android:inputType="textPassword"
             android:padding="9dp"
             android:textSize="20dp" />
@@ -87,7 +87,7 @@
             android:layout_gravity="center"
             android:drawablePadding="12dp"
             android:background="#ffff"
-            android:hint="Confirm Password"
+            android:hint="@string/ConfirmPassword"
             android:inputType="textPassword"
             android:padding="9dp"
             android:textSize="20dp" />
@@ -101,7 +101,7 @@
             android:layout_gravity="center"
             android:layout_margin="15dp"
             android:background="@drawable/rounded"
-            android:text="Next"
+            android:text="@string/Next"
             android:textAllCaps="false"
             android:textColor="#FFF"
             android:textSize="20dp" />

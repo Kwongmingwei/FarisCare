@@ -37,7 +37,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
 
-            android:text="We care for you"
+            android:text="@string/Wecareforyou"
             android:textColor="#FFD246"
             android:textSize="35dp"
             android:textStyle="bold"
@@ -52,7 +52,7 @@
             android:background="#ffff"
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="37dp"
-            android:hint="Username"
+            android:hint="@string/Username"
             android:inputType="textEmailAddress"
             android:padding="9dp"
             android:textSize="20dp"
@@ -68,7 +68,7 @@
             android:drawableStart="@drawable/ic_lock"
             android:drawablePadding="37dp"
             android:background="#ffff"
-            android:hint="Password"
+            android:hint="@string/Password"
             android:inputType="textPassword"
             android:padding="9dp"
             android:textSize="20dp" />
@@ -87,7 +87,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
             android:background="@drawable/rounded"
-            android:text="Sign In"
+            android:text="@string/SignIn"
             android:textAllCaps="false"
             android:textColor="#FFF"
             android:textSize="23dp"
@@ -98,7 +98,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Don't have a account? "
+            android:text="@string/donthaveaccount"
             android:textSize="16dp"
             android:gravity="center"
             android:textStyle="bold"
@@ -108,13 +108,23 @@
             android:id="@+id/Register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Register"
+            android:text="@string/Register"
             android:gravity="center"
             android:textColor="#FFFF"
             android:textSize="16dp"
             android:textStyle="bold" />
 
 
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/langbutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ChangeLanguage" />
 
 
     </LinearLayout>

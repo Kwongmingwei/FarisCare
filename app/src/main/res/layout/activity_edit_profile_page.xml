@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Profile"
+            android:text="@string/Profile"
             android:textColor="#FFD246"
             android:textSize="40dp"
             android:textStyle="bold" />
@@ -42,7 +42,7 @@
             android:background="#2768A5"
             android:textColor="#FFFFFF"
             android:padding="9dp"
-            android:text="Name"
+            android:text="@string/Name"
             android:textSize="25dp"
             android:textStyle="bold"/>
         <TextView
@@ -65,7 +65,7 @@
             android:background="#2768A5"
             android:textColor="#FFFFFF"
             android:padding="9dp"
-            android:text="Date of birth"
+            android:text="@string/Date_Of_Birth"
             android:textSize="25dp"
             android:textStyle="bold"/>
         <TextView
@@ -89,7 +89,7 @@
             android:backgroundTint="#2768A5"
             android:textColor="#FFFFFF"
             android:padding="9dp"
-            android:text="Address"
+            android:text="@string/Address"
             android:textSize="25dp"
             android:textStyle="bold"/>
         <TextView
@@ -113,7 +113,7 @@
             android:backgroundTint="#2768A5"
             android:textColor="#FFFFFF"
             android:padding="9dp"
-            android:text="Emergency Contact"
+            android:text="@string/Emergency_Contact"
             android:textSize="25dp"
             android:textStyle="bold"/>/>
         <EditText
@@ -138,7 +138,7 @@
             android:textColor="#FFFFFF"
             android:padding="9dp"
             android:textAlignment="center"
-            android:text="Confirm"
+            android:text="@string/Confirm"
             android:textSize="20dp"
             android:textStyle="bold"/>/>
 

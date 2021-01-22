@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FarisCare</string>
+    <string name="Name">Nama</string>
+    <string name="Date_Of_Birth">Tarikh Lahir</string>
+    <string name="Address">Alamat</string>
+    <string name="Emergency_Contact">Talian Kecemasan</string>
+    <string name="Profile">Profil</string>
+    <string name="donthaveaccount">Tidak mempunyai akaun?</string>
+    <string name="Email">Alamat Emel</string>
+    <string name="Password">Kata Laluan</string>
+    <string name="Register">Daftar</string>
+    <string name="SignIn">Log Masuk</string>
+    <string name="Username">Nama Pengguna</string>
+    <string name="Wecareforyou">Kami peduli demi anda</string>
+    <string name="PhoneNumber">Nombor Telefon</string>
+    <string name="CreateAccount">Buat Akaun</string>
+    <string name="Volunteer_Code">Kod Sukarelawan</string>
+    <string name="ConfirmPassword">Mengesahkan Kata Laluan</string>
+    <string name="Next">Seterusnya</string>
+    <string name="Edit">Sunting</string>
+    <string name="PostalCode">Poskod</string>
+    <string name="Confirm">Mengesah</string>
+    <string name="next">Seterusnya</string>
+    <string name="previous">Sebelum</string>
+    <string name="Call">Hubungi</string>
+    <string name="Back">Balik</string>
+    <string-array name="languages">
+        <item>Pilih Bahasa:</item>
+        <item>English</item>
+        <item>Chinese</item>
+        <item>Malay</item>
+        <item>Tamil</item>
+    </string-array>
+    <string name="CurrentActiveCases">Kes Aktif Semasa:</string>
+    <string name="CurrentCriticalCases">Kes Kritikal Semasa:</string>
+    <string name="TotalInfectedCases">Jumlah Kes Jangkitan:</string>
+    <string name="TotalDeceasedCases">Jumlah Kes Termati:</string>
+    <string name="TotalRecoveredCases">Jumlah Kes Sembuh:</string>
+    <string name="ChangeLanguage">Tukar Bahasa</string>
+    <string name="CurrentStableCases">Kes Stabil Semasa:</string>
+    <string name="LastUpdatedOn">Terakhir Dikemaskini:</string>
+</resources>

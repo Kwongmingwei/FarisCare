@@ -29,7 +29,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Name"
+                android:text="@string/Name"
                 android:id="@+id/itemName"
                 android:padding="10dp"
                 android:textSize="20sp"
@@ -38,7 +38,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Call"
+                android:text="@string/Call"
                 android:id="@+id/callButton"
                 android:layout_marginStart="10dp"
                 android:textSize="16sp"/>
