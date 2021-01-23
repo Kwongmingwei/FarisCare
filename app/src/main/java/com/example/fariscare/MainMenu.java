@@ -1,6 +1,7 @@
 package com.example.fariscare;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -13,15 +14,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sinch.android.rtc.ClientRegistration;
+import com.sinch.android.rtc.PushPair;
+import com.sinch.android.rtc.Sinch;
+import com.sinch.android.rtc.SinchClient;
+import com.sinch.android.rtc.SinchError;
+import com.sinch.android.rtc.calling.Call;
+import com.sinch.android.rtc.calling.CallClient;
+import com.sinch.android.rtc.calling.CallClientListener;
+import com.sinch.android.rtc.calling.CallListener;
+
+import java.util.List;
 
 import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
 
@@ -33,6 +48,13 @@ public class MainMenu extends AppCompatActivity {
     TextView address,name,dob;
     DatabaseReference databaseReference;
     ImageView ic,call;
+    SinchClient sinchClient;
+    Call calls;
+    DatabaseReference reference;
+    FirebaseAuth auth;
+    FirebaseUser firebaseUser;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +87,35 @@ public class MainMenu extends AppCompatActivity {
 
             }
         });
+        reference=FirebaseDatabase.getInstance().getReference().child("Member");
+        auth=FirebaseAuth.getInstance();
+        firebaseUser=auth.getCurrentUser();
+
+        Log.v("sinchuid",firebaseUser.getUid());
+
+        sinchClient= Sinch.getSinchClientBuilder().context(this)
+                .userId(firebaseUser.getUid())
+                .applicationKey("63cc94ee-d4f8-4805-8938-6067e98fc8fa")
+                .applicationSecret("t1FsM6t2k0+Pq8hKPzW3sQ==").environmentHost("clientapi.sinch.com").build();
+
+        sinchClient.setSupportCalling(true);
+        sinchClient.startListeningOnActiveConnection();
+        sinchClient.setSupportActiveConnectionInBackground(true);
+
+
+        sinchClient.getCallClient().addCallClientListener(new MainMenu.SinchCallClientListener(){
+            public void onClientStarted(SinchClient client) { }
+
+            public void onClientStopped(SinchClient client) { }
+
+            public void onClientFailed(SinchClient client, SinchError error) { }
+
+            public void onRegistrationCredentialsRequired(SinchClient client, ClientRegistration registrationCallback) { }
+
+            public void onLogMessage(int level, String area, String message) { }
+
+        });
+        sinchClient.start();
         call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -173,6 +224,64 @@ public class MainMenu extends AppCompatActivity {
                 }
                 return;
             }
+        }
+    }
+
+
+    private class SinchCallListener implements CallListener {
+
+        @Override
+        public void onCallProgressing(Call calls) {
+            Toast.makeText(getApplicationContext(),"Ring ring",Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onCallEstablished(Call calls) {
+            Toast.makeText(getApplicationContext(),"Call connected",Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCallEnded(Call endedcall) {
+            Toast.makeText(getApplicationContext(),"Call ended",Toast.LENGTH_SHORT).show();
+            calls=null;
+            endedcall.hangup();
+        }
+
+        @Override
+        public void onShouldSendPushNotification(Call calls, List<PushPair> list) {
+
+        }
+    }
+
+
+
+
+    private class SinchCallClientListener implements CallClientListener {
+
+        @Override
+        public void onIncomingCall(CallClient callClient, final Call incomingcall) {
+
+            AlertDialog alertDialog =new AlertDialog.Builder(MainMenu.this).create();
+            alertDialog.setTitle("Calling...");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Reject", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    calls=incomingcall;
+                    dialog.dismiss();
+                    calls.hangup();
+                }
+            });
+            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Pick up", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    calls=incomingcall;
+                    calls.answer();
+                    calls.addCallListener(new MainMenu.SinchCallListener());
+                    Toast.makeText(getApplicationContext(),"Call is answered",Toast.LENGTH_LONG).show();
+                }
+            });
+
+            alertDialog.show();
         }
     }
 }

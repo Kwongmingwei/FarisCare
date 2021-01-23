@@ -149,6 +149,7 @@ public class OCall extends AppCompatActivity {
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Reject", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    call=incomingcall;
                     dialog.dismiss();
                     call.hangup();
                 }
