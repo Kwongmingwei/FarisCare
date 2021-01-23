@@ -60,13 +60,13 @@ public class ApiPage extends AppCompatActivity {
 
                 Post posts=response.body();
 
-                cActive.setText(posts.getActiveCases());
-                stable.setText(posts.getStableHospitalized());
-                crictical.setText(posts.getCriticalHospitalized());
-                totalInfected.setText(posts.getInfected());
-                totalDeceased.setText(posts.getDeceased());
-                totalRecovered.setText(posts.getRecovered());
-                lastUpdated.setText(posts.getLastUpdatedAtApify());
+                cActive.setText(""+posts.getActiveCases());
+                stable.setText(""+posts.getStableHospitalized());
+                crictical.setText(""+posts.getCriticalHospitalized());
+                totalInfected.setText(""+posts.getInfected());
+                totalDeceased.setText(""+posts.getDeceased());
+                totalRecovered.setText(""+posts.getRecovered());
+                lastUpdated.setText(""+posts.getLastUpdatedAtApify());
 
             }
 
