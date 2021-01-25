@@ -1,28 +1,19 @@
 package com.example.fariscare;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.EventLog;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,10 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
-import java.util.Locale;
-
-
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG="Recycler View ItemList";
@@ -57,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     Button loginbutton;
     TextView register;
     EditText EnterEmail,EnterPassword;
-    Button Loginbutton, langButton;
+    Button LoginButton;
     TextView RegisterButton;
     TextView ResetPassword;
     FirebaseAuth Auth;
@@ -74,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public Context getLogincontext(){
         return logincontext;
     }
-    public  Context getContext() {
+    public  Context getContext(){
         Context mContext = MainActivity.this;
         return mContext;
     }
@@ -87,14 +76,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         loginbutton=(Button)findViewById(R.id.LoginButton);
         register=(TextView)findViewById(R.id.Register);
-        langButton = (Button)findViewById(R.id.langbutton);
         EnterEmail=findViewById(R.id.EnterEmail);
         EnterPassword=findViewById(R.id.EnterPassword);
         Auth=FirebaseAuth.getInstance();
         progressBar =  findViewById(R.id.progressBar);
         user=Auth.getCurrentUser();
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Member");
-        loadLocale();
     //chris
         //Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
@@ -117,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
+
+                ;
             });
         }
 
@@ -206,47 +195,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //Faris
-        Spinner spinner = findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence>adapter = ArrayAdapter.createFromResource(this,R.array.languages, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        langButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String lang = spinner.getSelectedItem().toString();
-                Toast.makeText(MainActivity.this,lang,Toast.LENGTH_SHORT).show();
-                setLocale(lang);
-                setAppLocale(lang);
-                recreate();
-            }
-        });
-
-
-    }
-    //Faris, changes locale and language
-    private void setAppLocale(String localeCode){
-        Resources resources = getResources();
-        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
-        Configuration configuration = resources.getConfiguration();
-        configuration.setLocale(new Locale(localeCode.toLowerCase()));
-        resources.updateConfiguration(configuration, displayMetrics);
-        configuration.locale = new Locale(localeCode.toLowerCase());
-        resources.updateConfiguration(configuration, displayMetrics);
-    }
-    private void setLocale(String lang) {
-        Locale locale = new Locale(lang);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config,getBaseContext().getResources().getDisplayMetrics());
-        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
-        editor.putString("Lang", lang);
-        editor.apply();
-    }
-    private void loadLocale(){
-        SharedPreferences prefs = getSharedPreferences("Settings",MODE_PRIVATE);
-        String lang = prefs.getString("Lang","");
-        setLocale(lang);
     }
 }

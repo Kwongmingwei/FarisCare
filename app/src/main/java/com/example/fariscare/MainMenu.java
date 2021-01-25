@@ -44,6 +44,7 @@ public class MainMenu extends AppCompatActivity {
     Button emergencyButton;
     Button socialButton;
     Button apiButton;
+    Button eventButton;
     String eContact,uid;
     TextView address,name,dob;
     DatabaseReference databaseReference;
@@ -62,6 +63,7 @@ public class MainMenu extends AppCompatActivity {
         ActivityCompat.requestPermissions(MainMenu.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
         apiButton=(Button)findViewById(R.id.groceries);
         socialButton=(Button)findViewById(R.id.social);
+        eventButton = (Button) findViewById(R.id.social);  //Change to EventPlanner ID
         eContact = getIntent().getStringExtra("emergency");
         ic=findViewById(R.id.imageView9);
         name=findViewById(R.id.NameHome);
@@ -139,6 +141,16 @@ public class MainMenu extends AppCompatActivity {
                 requestAudioPermissions();
                 Intent social=new Intent(MainMenu.this,OCall.class);
                 startActivity(social);
+
+            }
+        });
+
+        eventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestAudioPermissions();
+                Intent event=new Intent(MainMenu.this,EventAdapter.class);
+                startActivity(event);
 
             }
         });
