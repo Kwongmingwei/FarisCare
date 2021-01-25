@@ -27,10 +27,10 @@
     <string name="Back">Balik</string>
     <string-array name="languages">
         <item>Pilih Bahasa:</item>
-        <item>English</item>
-        <item>Chinese</item>
-        <item>Malay</item>
-        <item>Tamil</item>
+        <item>en</item>
+        <item>zh</item>
+        <item>ms</item>
+        <item>ta</item>
     </string-array>
     <string name="CurrentActiveCases">Kes Aktif Semasa:</string>
     <string name="CurrentCriticalCases">Kes Kritikal Semasa:</string>

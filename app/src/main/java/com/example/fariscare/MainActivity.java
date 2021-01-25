@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG="Recycler View ItemList";
     private ArrayList<EventItem> mItemList; //Keith
@@ -73,10 +74,11 @@ public class MainActivity extends AppCompatActivity {
     public Context getLogincontext(){
         return logincontext;
     }
-    public  Context getContext(){
+    public  Context getContext() {
         Context mContext = MainActivity.this;
         return mContext;
     }
+    public MainActivity(){}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,80 +243,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
         editor.putString("Lang", lang);
         editor.apply();
-
-
-        //----------------------------------------------------------------------------------------------------------------------------------
-        //Recyclerview for events-----------------------------------------------------------------------------------------------------------
-        //----------------------------------------------------------------------------------------------------------------------------------
-        createItemList();
-        buildRecyclerView();
-
-        buttonInsert = findViewById(R.id.button_insert);
-        buttonRemove = findViewById(R.id.button_remove);
-        editTextInsert = findViewById(R.id.edittext_insert);
-        editTextRemove = findViewById(R.id.edittext_remove);
-
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = Integer.parseInt(editTextInsert.getText().toString());
-                insertItem(position);
-            }
-        });
-
-        buttonRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = Integer.parseInt(editTextRemove.getText().toString());
-                removeItem(position);
-            }
-        });
-
-    }
-
-    public void insertItem(int position) {
-        mItemList.add(position, new EventItem(R.drawable.ic_test_img, "New Item At Position" + position, "This is Line 2"));
-        mAdapter.notifyItemInserted(position);
-    }
-
-    public void removeItem(int position) {
-        mItemList.remove(position);
-        mAdapter.notifyItemRemoved(position);
-    }
-
-    public void changeItem(int position, String text) {
-        mItemList.get(position).changeText1(text);
-        mAdapter.notifyItemChanged(position);
-    }
-
-    public void createItemList() {
-        mItemList = new ArrayList<>();
-        mItemList.add(new EventItem(R.drawable.ic_test_img, "Line 1", "Line 2"));
-        mItemList.add(new EventItem(R.drawable.ic_test_img2, "Line 3", "Line 4"));
-        mItemList.add(new EventItem(R.drawable.ic_test_img3, "Line 5", "Line 6"));
-    }
-
-    public void buildRecyclerView() {
-        mRecyclerView = findViewById(R.id.recyclerView);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new EventAdapter(mItemList);
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
-
-        mAdapter.setOnItemClickListener(new EventAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                changeItem(position, "Clicked");
-            }
-        });
     }
     private void loadLocale(){
         SharedPreferences prefs = getSharedPreferences("Settings",MODE_PRIVATE);
         String lang = prefs.getString("Lang","");
         setLocale(lang);
     }
-
-
 }

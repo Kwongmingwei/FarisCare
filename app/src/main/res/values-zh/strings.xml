@@ -27,10 +27,10 @@
     <string name="previous">后退</string>
     <string-array name="languages">
         <item>Select Language:</item>
-        <item>English</item>
-        <item>Chinese</item>
-        <item>Malay</item>
-        <item>Tamil</item>
+        <item>en</item>
+        <item>zh</item>
+        <item>ms</item>
+        <item>ta</item>
     </string-array>
     <string name="CurrentActiveCases">当前活跃案例:</string>
     <string name="CurrentStableCases">当前稳定的病例:</string>

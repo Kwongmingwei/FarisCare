@@ -41,10 +41,10 @@
     <string name="ChangeLanguage">Change Language</string>
     <string-array name="languages">
         <item>Select Language:</item>
-        <item>English</item>
-        <item>Chinese</item>
-        <item>Malay</item>
-        <item>Tamil</item>
+        <item>en</item>
+        <item>zh</item>
+        <item>ms</item>
+        <item>ta</item>
     </string-array>
 
 </resources>
