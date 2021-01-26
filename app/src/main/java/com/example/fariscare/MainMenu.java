@@ -63,7 +63,7 @@ public class MainMenu extends AppCompatActivity {
         ActivityCompat.requestPermissions(MainMenu.this, new String[]{Manifest.permission.CALL_PHONE}, 1);
         apiButton=(Button)findViewById(R.id.groceries);
         socialButton=(Button)findViewById(R.id.social);
-        eventButton = (Button) findViewById(R.id.social);  //Change to EventPlanner ID
+        eventButton = (Button) findViewById(R.id.event);
         eContact = getIntent().getStringExtra("emergency");
         ic=findViewById(R.id.imageView9);
         name=findViewById(R.id.NameHome);
@@ -149,7 +149,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestAudioPermissions();
-                Intent event=new Intent(MainMenu.this,EventAdapter.class);
+                Intent event=new Intent(MainMenu.this,EventActivity.class);
                 startActivity(event);
 
             }

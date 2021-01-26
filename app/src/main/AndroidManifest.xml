@@ -27,7 +27,9 @@
         <activity android:name=".OCall" />
         <activity android:name=".RegisterPage" />
         <activity android:name=".MainMenu" />
+        <activity android:name=".EventActivity"/>
         <activity android:name=".MainActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

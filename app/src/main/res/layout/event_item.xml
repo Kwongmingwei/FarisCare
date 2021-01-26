@@ -8,7 +8,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="68dp"
-        android:layout_margin="4dp">
+        android:layout_margin="4dp"
+        android:background="#7CA9D3">
 
         <ImageView
             android:id="@+id/imageView"
@@ -21,20 +22,20 @@
             android:padding="2dp" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/eventName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="21dp"
             android:text="Event Name"
             android:textColor="@android:color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/eventDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -46,7 +47,7 @@
             android:textSize="15sp" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/eventType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -59,19 +60,19 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/eventDesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="49dp"
+            android:layout_marginStart="49dp"
+            android:layout_marginTop="47dp"
             android:text="Summarised Description"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
-             />
+            android:textSize="15sp" />
 
         <Button
+            android:id="@+id/joinBtn"
             android:layout_width="80dp"
             android:layout_height="35dp"
             android:layout_alignParentEnd="true"
@@ -81,7 +82,8 @@
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="2dp"
             android:text="Join"
-            android:background="@android:color/holo_blue_dark"/>
+            android:textColor="@android:color/white"
+            android:background="#353E55"/>
 
     </RelativeLayout>
 

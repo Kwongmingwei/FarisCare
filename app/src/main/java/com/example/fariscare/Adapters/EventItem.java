@@ -1,29 +1,41 @@
 package com.example.fariscare.Adapters;
 
+import android.widget.Button;
+
+import java.time.LocalDateTime;
+
 public class EventItem {
-    private int mImageResource;
-    private String mText1;
-    private String mText2;
+    private String mEventName;
+    private String mEventDate;
+    private String mEventType;
+    private String mEventDesc;
+    private Button mEventJoin;
 
-    public EventItem(int imageResource, String text1, String text2) {
-        mImageResource = imageResource;
-        mText1 = text1;
-        mText2 = text2;
+    public EventItem(String eventName, String eventDate, String eventType, String eventDesc, Button eventJoin) {
+        mEventName = eventName;
+        mEventDate = eventDate;
+        mEventType = eventType;
+        mEventDesc = eventDesc;
+        mEventJoin = eventJoin;
     }
 
-    public void changeText1(String text) {
-        mText1 = text;
+    public String getEventName() {
+        return mEventName;
     }
 
-    public int getImageResource() {
-        return mImageResource;
+    public String getEventDate() {
+        return mEventDate;
     }
 
-    public String getText1() {
-        return mText1;
+    public String getEventType() {
+        return mEventType;
     }
 
-    public String getText2() {
-        return mText2;
+    public String getEventDesc() {
+        return mEventName;
+    }
+
+    public Button getEventJoin() {
+        return mEventJoin;
     }
 }

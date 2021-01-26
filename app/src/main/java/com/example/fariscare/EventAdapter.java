@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fariscare.Adapters.EventItem;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.EventListener;
 
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
+public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {//ADAPTER 1/4
     private ArrayList<EventItem> mEventList;
     private OnItemClickListener mListener;
 
@@ -26,16 +28,20 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         mListener = listener;
     }
 
-    public static class EventViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mImageView;
-        public TextView mTextView1;
-        public TextView mTextView2;
+    public static class EventViewHolder extends RecyclerView.ViewHolder { //VIEWHOLDER
+        //public ImageView mImageView;
+        public TextView mEventName;
+        public TextView mEventDate;
+        public TextView mEventType;
+        public TextView mEventDesc;
 
         public EventViewHolder(View itemView, OnItemClickListener listener){
             super(itemView);
-            mImageView = itemView.findViewById(R.id.imageView);
-            mTextView1 = itemView.findViewById(R.id.textView);
-            mTextView2 = itemView.findViewById(R.id.textView);
+            //mImageView = itemView.findViewById(R.id.imageView);
+            mEventName = itemView.findViewById(R.id.eventName);
+            mEventDate = itemView.findViewById(R.id.eventDate);
+            mEventType = itemView.findViewById(R.id.eventType);
+            mEventDesc = itemView.findViewById(R.id.eventDesc);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -55,21 +61,21 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         mEventList = eventList;
     }
 
-    @NonNull
     @Override
-    public EventAdapter.EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public EventAdapter.EventViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.event_item, parent, false);
         EventViewHolder evh = new EventViewHolder(v, mListener);
         return evh;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventAdapter.EventViewHolder holder, int position) {
+    public void onBindViewHolder(EventAdapter.EventViewHolder holder, int position) {
         EventItem currentItem = mEventList.get(position);
-
-        holder.mImageView.setImageResource(currentItem.getImageResource());
-        holder.mTextView1.setText(currentItem.getText1());
-        holder.mTextView2.setText(currentItem.getText2());
+        
+        holder.mEventName.setText(currentItem.getEventName());
+        holder.mEventDate.setText(currentItem.getEventDate());
+        holder.mEventType.setText(currentItem.getEventType());
+        holder.mEventDesc.setText(currentItem.getEventDesc());
     }
 
     @Override
