@@ -5,10 +5,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.fariscare.Member;
@@ -41,6 +41,8 @@ public class AllUsersAdapter extends RecyclerView.Adapter<AllUsersAdapter.AllUse
         holder.textViewName.setText(member.getName());
         Log.v("Adapter",member.getName());
 
+
+
     }
 
     @Override
@@ -51,13 +53,14 @@ public class AllUsersAdapter extends RecyclerView.Adapter<AllUsersAdapter.AllUse
     public class AllUsersViewHolder extends RecyclerView.ViewHolder{
 
         TextView textViewName;
-        Button button;
+        CardView cardView;
+
+
         public AllUsersViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewName=(TextView)itemView.findViewById(R.id.itemName);
-            button=itemView.findViewById(R.id.callButton);
-
-            button.setOnClickListener(new View.OnClickListener() {
+            cardView=itemView.findViewById(R.id.cardView);
+            cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Member member=memberArrayList.get(getAdapterPosition());

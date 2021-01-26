@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OCall">
+    tools:context=".OCall"
+    android:background="#2768A5">
 
 <androidx.recyclerview.widget.RecyclerView
     android:layout_width="match_parent"

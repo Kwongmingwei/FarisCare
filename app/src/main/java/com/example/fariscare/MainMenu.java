@@ -140,6 +140,7 @@ public class MainMenu extends AppCompatActivity {
             public void onClick(View v) {
                 requestAudioPermissions();
                 Intent social=new Intent(MainMenu.this,OCall.class);
+                social.putExtra("uid", uid);
                 startActivity(social);
 
             }

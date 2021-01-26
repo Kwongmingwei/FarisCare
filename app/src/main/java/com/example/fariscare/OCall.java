@@ -2,6 +2,7 @@ package com.example.fariscare;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -106,6 +108,10 @@ public class OCall extends AppCompatActivity {
 
 
                 AllUsersAdapter adapter=new AllUsersAdapter(OCall.this,memberArrayList);
+                int spanCount=pxToDp(getScreenWidth())/120;
+                Log.v(TAG, "span count is " + spanCount);
+                GridLayoutManager gLayoutManager = new GridLayoutManager(OCall.this, spanCount);
+                contactsRecycler.setLayoutManager(gLayoutManager);
                 contactsRecycler.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
             }
@@ -116,6 +122,17 @@ public class OCall extends AppCompatActivity {
             }
         });
     }
+
+    public static int pxToDp(int px) {
+        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+    }
+
+    // Get current screen width in px
+    public static int getScreenWidth() {
+        Log.v(TAG,"Screen width in px : "+(Resources.getSystem().getDisplayMetrics().widthPixels));
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
 
 
     private class SinchCallListener implements CallListener{
