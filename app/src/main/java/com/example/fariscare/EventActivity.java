@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.fariscare.Adapters.EventItem;
+//import com.example.fariscare.Adapters.EventItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -36,9 +36,9 @@ import java.util.ArrayList;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG="Recycler View ItemList";
-    private ArrayList<EventItem> mItemList; //Keith
+    //private ArrayList<EventItem> mItemList; //Keith
     private RecyclerView mRecyclerView; //Contain recycler view recreated in XML layout
-    private EventAdapter mAdapter; //Bridge between Arraylist and recyclerview
+    //private EventAdapter mAdapter; //Bridge between Arraylist and recyclerview
     private RecyclerView.LayoutManager mLayoutManager; //Responsible for aligning items in Arraylist
     FirebaseAuth Auth;
     SharedPreferences Auto_login;
@@ -56,11 +56,11 @@ public class EventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         createItemList();
         buildRecyclerView();
-        a=(TextView)findViewById(R.id.eventName);
-        b=(TextView)findViewById(R.id.eventDate);
-        c=(TextView)findViewById(R.id.eventType);
-        d=(TextView)findViewById(R.id.eventDesc);
-        btn=(Button)findViewById(R.id.joinBtn);
+    //    a=(TextView)findViewById(R.id.eventName);
+     //   b=(TextView)findViewById(R.id.eventDate);
+       // c=(TextView)findViewById(R.id.eventType);
+       // d=(TextView)findViewById(R.id.eventDesc);
+       // btn=(Button)findViewById(R.id.joinBtn);
 
         ref = FirebaseDatabase.getInstance().getReference().child("Member").child("1");
         ref.addValueEventListener(new ValueEventListener() {
@@ -93,12 +93,12 @@ public class EventActivity extends AppCompatActivity {
         }
 
         public void buildRecyclerView() {
-        mRecyclerView = findViewById(R.id.recyclerView);
+        //mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new EventAdapter(mItemList);
+        //mAdapter = new EventAdapter(mItemList);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        //mRecyclerView.setAdapter(mAdapter);
         }
 }

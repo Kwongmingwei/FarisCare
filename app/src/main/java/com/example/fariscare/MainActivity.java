@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.fariscare.Adapters.EventItem;
+//import com.example.fariscare.Adapters.EventItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -34,6 +34,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG="Recycler View ItemList";
+ //   private ArrayList<EventItem> mItemList; //Keith
+    private RecyclerView mRecyclerView; //Contain recycler view recreated in XML layout
+ //   private EventAdapter mAdapter; //Bridge between Arraylist and recyclerview
+    private RecyclerView.LayoutManager mLayoutManager; //Responsible for aligning items in Arraylist
+    private Button buttonInsert; //Keith
+    private Button buttonRemove; //Keith
+    private EditText editTextInsert;
+    private EditText editTextRemove;
     public Context logincontext;
     Button loginbutton;
     TextView register;
@@ -46,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     String uid;
     DatabaseReference databaseReference;
-    ProgressBar progressBar;
+    //ProgressBar progressBar;
 
     public MainActivity(Context context)
     {
@@ -64,27 +72,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Auto_login = getSharedPreferences("LoginButton", MODE_PRIVATE);
+        Auto_login=getSharedPreferences("LoginButton",MODE_PRIVATE);
         setContentView(R.layout.activity_main);
-        loginbutton = (Button) findViewById(R.id.LoginButton);
-        register = (TextView) findViewById(R.id.Register);
-        EnterEmail = findViewById(R.id.EnterEmail);
-        EnterPassword = findViewById(R.id.EnterPassword);
-        Auth = FirebaseAuth.getInstance();
-        progressBar = findViewById(R.id.progressBar);
-        user = Auth.getCurrentUser();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("Member");
-        //chris
+        loginbutton=(Button)findViewById(R.id.LoginButton);
+        register=(TextView)findViewById(R.id.Register);
+        EnterEmail=findViewById(R.id.EnterEmail);
+        EnterPassword=findViewById(R.id.EnterPassword);
+        Auth=FirebaseAuth.getInstance();
+        //progressBar =  findViewById(R.id.progressBar);
+        user=Auth.getCurrentUser();
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("Member");
+    //chris
         //Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
-        if (Auto_login.getBoolean("logged", false)) {
+        if(Auto_login.getBoolean("logged",false)){
             databaseReference.orderByChild("email").equalTo(user.getEmail()).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         //Chris - get uid from shared preferences
                         uid = Auto_login.getString("UserID", null);
-                        Log.v(TAG, "the user id sent= " + uid);
+                        Log.v(TAG,"the user id sent= " + uid);
                         Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);
                         MainActivity.putExtra("User_UID", uid);
                         startActivity(MainActivity);
@@ -101,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        loginbutton.setOnClickListener(new View.OnClickListener() {
+        loginbutton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 final String email, password;
@@ -110,20 +118,20 @@ public class MainActivity extends AppCompatActivity {
                 //Chris - Validation
                 //Check for empty Inputs
                 if (email.isEmpty()) {
-                    Log.v(TAG, "Email Required");
+                    Log.v(TAG,"Email Required");
                     Toast.makeText(MainActivity.this, "Email Required", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (password.isEmpty())//check for empty input
                 {
-                    Log.v(TAG, "Password Required");
+                    Log.v(TAG,"Password Required");
                     Toast.makeText(MainActivity.this, "Password Required", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (password.length() < 6)//for exception to not appear
                 {
-                    Log.v(TAG, "Password is must be at least contain 6 characters");
+                    Log.v(TAG,"Password is must be at least contain 6 characters");
                     Toast.makeText(MainActivity.this, "Password is must be at least contain 6 characters", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -137,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                         uid = snapshot.getKey();
-                                        String emergencycontact = snapshot.child("emergencyContact").getValue().toString();
+                                        String emergencycontact=snapshot.child("emergencyContact").getValue().toString();
                                         String name = snapshot.child("name").getValue().toString();
 
                                         //Chris - show that it works
@@ -151,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
                                         Intent ToMenuPage = new Intent(MainActivity.this, MainMenu.class);
                                         ToMenuPage.putExtra("User_UID", uid);
                                         ToMenuPage.putExtra("emergency", emergencycontact);
-                                        Auto_login.edit().putBoolean("logged", true).apply();
+                                        Auto_login.edit().putBoolean("logged",true).apply();
                                         Log.v(TAG, "sending this uid to main activity " + uid);
                                         startActivity(ToMenuPage);
                                         finish();
@@ -160,17 +168,17 @@ public class MainActivity extends AppCompatActivity {
                                     }
 
                                 }
-
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                 }
                             });
 
 
-                        } else {
+                        }
+                        else {
                             //Chris - if login failed
-                            progressBar.setVisibility(View.INVISIBLE);
-                            Log.v(TAG, "Login Failed");
+                           // progressBar.setVisibility(View.INVISIBLE);
+                            Log.v(TAG,"Login Failed");
                             Toast.makeText(MainActivity.this, "Login Failed", Toast.LENGTH_LONG).show();
                         }
 
@@ -179,15 +187,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        register.setOnClickListener(new View.OnClickListener() {
+        register.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                Intent RegisterIntent = new Intent(MainActivity.this, RegisterPage.class);
+                Intent RegisterIntent=new Intent(MainActivity.this,RegisterPage.class);
                 startActivity(RegisterIntent);
             }
         });
 
-
     }
-
 }

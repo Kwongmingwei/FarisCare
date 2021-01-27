@@ -150,7 +150,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestAudioPermissions();
-                Intent event=new Intent(MainMenu.this,EventActivity.class);
+                Intent event=new Intent(MainMenu.this,Search.class);
                 startActivity(event);
 
             }
@@ -161,7 +161,6 @@ public class MainMenu extends AppCompatActivity {
                 Intent profile=new Intent(MainMenu.this,ProfilePage.class);
                 profile.putExtra("uid", uid);
                 startActivity(profile);
-                finish();
             }
         });
 
