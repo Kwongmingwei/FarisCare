@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.EventLog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,10 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-//import com.example.fariscare.Adapters.EventItem;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -30,18 +26,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
     private static final String TAG="Recycler View ItemList";
- //   private ArrayList<EventItem> mItemList; //Keith
-    private RecyclerView mRecyclerView; //Contain recycler view recreated in XML layout
- //   private EventAdapter mAdapter; //Bridge between Arraylist and recyclerview
-    private RecyclerView.LayoutManager mLayoutManager; //Responsible for aligning items in Arraylist
-    private Button buttonInsert; //Keith
-    private Button buttonRemove; //Keith
-    private EditText editTextInsert;
-    private EditText editTextRemove;
     public Context logincontext;
     Button loginbutton;
     TextView register;
@@ -54,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     String uid;
     DatabaseReference databaseReference;
-    //ProgressBar progressBar;
+    ProgressBar progressBar;
 
     public MainActivity(Context context)
     {
@@ -82,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         //progressBar =  findViewById(R.id.progressBar);
         user=Auth.getCurrentUser();
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Member");
-    //chris
+
         //Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
         if(Auto_login.getBoolean("logged",false)){
@@ -159,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                                         Intent ToMenuPage = new Intent(MainActivity.this, MainMenu.class);
                                         ToMenuPage.putExtra("User_UID", uid);
                                         ToMenuPage.putExtra("emergency", emergencycontact);
-                                        Auto_login.edit().putBoolean("logged",true).apply();
+                                        Auto_login.edit().putBoolean("logged", true).apply();
                                         Log.v(TAG, "sending this uid to main activity " + uid);
                                         startActivity(ToMenuPage);
                                         finish();
@@ -177,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else {
                             //Chris - if login failed
-                           // progressBar.setVisibility(View.INVISIBLE);
+                            //progressBar.setVisibility(View.INVISIBLE);
                             Log.v(TAG,"Login Failed");
                             Toast.makeText(MainActivity.this, "Login Failed", Toast.LENGTH_LONG).show();
                         }
@@ -194,6 +180,5 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(RegisterIntent);
             }
         });
-
     }
 }

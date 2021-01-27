@@ -16,15 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ApiPage"></activity>
+        <activity android:name=".AddEvent"></activity>
+        <activity android:name=".ApiPage" />
         <activity android:name=".EditProfilePage" />
         <activity android:name=".ProfilePage" />
         <activity android:name=".RegisterPt2" />
         <activity android:name=".OCall" />
         <activity android:name=".RegisterPage" />
-        <activity android:name=".MainMenu"/>
-        <activity android:name=".Search"/>
-        <activity android:name=".SearchResult"/>
+        <activity android:name=".MainMenu" />
+        <activity android:name=".Search" />
+        <activity android:name=".SearchResult" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

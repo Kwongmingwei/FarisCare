@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2768A5"
+    tools:context=".AddEvent">
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/Private"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Private Events"
+            android:textColor="#FFD246"
+            android:textSize="40dp"
+            android:layout_marginLeft="50dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="12dp"
+            android:background="#2768A5"
+            android:textColor="#FFFFFF"
+            android:padding="9dp"
+            android:text="Title"
+            android:textSize="25dp"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/title1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:drawablePadding="12dp"
+            android:background="@drawable/rounded"
+            android:padding="9dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            android:backgroundTint="#2768A5"
+            />
+        <TextView
+            android:id="@+id/Date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="12dp"
+            android:background="#2768A5"
+            android:textColor="#FFFFFF"
+            android:padding="9dp"
+            android:text="Date"
+            android:textSize="25dp"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:drawablePadding="12dp"
+            android:background="@drawable/rounded"
+            android:padding="9dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            android:backgroundTint="#2768A5"
+            />
+        <TextView
+            android:id="@+id/Time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="12dp"
+            android:backgroundTint="#2768A5"
+            android:textColor="#FFFFFF"
+            android:padding="9dp"
+            android:text="Time"
+            android:textSize="25dp"
+            android:textStyle="bold"/>
+        <EditText
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:drawablePadding="12dp"
+            android:background="@drawable/rounded"
+            android:backgroundTint="#2768A5"
+            android:textColor="#FFFFFF"
+            android:padding="9dp"
+            android:textSize="20dp" />/>
+
+        <TextView
+            android:id="@+id/Notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="10dp"
+            android:drawablePadding="12dp"
+            android:backgroundTint="#2768A5"
+            android:textColor="#FFFFFF"
+            android:padding="9dp"
+            android:text="Notes"
+            android:textSize="25dp"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/notes"
+            android:layout_width="match_parent"
+            android:layout_height="166dp"
+            android:layout_marginLeft="0dp"
+            android:background="@drawable/rounded"
+            android:backgroundTint="#2768A5"
+            android:drawablePadding="12dp"
+            android:padding="9dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            />
+
+        <Button
+            android:id="@+id/add1"
+            android:layout_width="191dp"
+            android:layout_height="wrap_content"
+            android:text="Add Event"
+            android:layout_marginLeft="80dp"
+            />
+
+
+    </LinearLayout>
+
+</RelativeLayout>

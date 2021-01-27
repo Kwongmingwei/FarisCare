@@ -150,7 +150,7 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestAudioPermissions();
-                Intent event=new Intent(MainMenu.this,Search.class);
+                Intent event=new Intent(MainMenu.this,AddEvent.class);
                 startActivity(event);
 
             }
