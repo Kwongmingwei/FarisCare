@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
                         Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);
                         MainActivity.putExtra("User_UID", uid);
                         startActivity(MainActivity);
-                        finish();
                     }
                 }
 
@@ -180,5 +179,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(RegisterIntent);
             }
         });
+
     }
 }

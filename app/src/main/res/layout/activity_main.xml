@@ -87,9 +87,9 @@
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
             android:background="@drawable/rounded"
+            android:textColor="#FFF"
             android:text="@string/SignIn"
             android:textAllCaps="false"
-            android:textColor="#FFF"
             android:textSize="23dp"
 
 

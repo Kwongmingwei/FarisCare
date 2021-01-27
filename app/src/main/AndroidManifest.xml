@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AddEvent"></activity>
+        <activity android:name=".ViewPublicEvents"></activity>
+        <activity android:name=".EventHubMain" />
+        <activity android:name=".AddEvent" />
         <activity android:name=".ApiPage" />
         <activity android:name=".EditProfilePage" />
         <activity android:name=".ProfilePage" />

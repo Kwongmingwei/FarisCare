@@ -150,7 +150,8 @@ public class MainMenu extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 requestAudioPermissions();
-                Intent event=new Intent(MainMenu.this,AddEvent.class);
+                Intent event=new Intent(MainMenu.this,EventHubMain.class);
+                event.putExtra("User_UID", uid);
                 startActivity(event);
 
             }

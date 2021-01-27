@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Adapter;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.fariscare.Adapters.RecyclerViewAdapterSearch;
@@ -23,8 +24,8 @@ import java.util.List;
 
 public class SearchResult extends AppCompatActivity {
     ArrayList <PublicEventSearch> list;
-    PublicEventSearch PES;
     DatabaseReference databaseReference;
+    TextView Nothing;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -34,7 +35,7 @@ public class SearchResult extends AppCompatActivity {
         setContentView(R.layout.activity_search_result);
         list=new ArrayList<>();
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Public Events");
-
+        Nothing=findViewById(R.id.Nothing);
         Bundle bundle = getIntent().getExtras();
         String search=bundle.getString("SearchEvent");
 
@@ -42,19 +43,25 @@ public class SearchResult extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    if (snapshot.child("eventName").getValue().toString().equals(search)) {
-                        list.add(new PublicEventSearch(snapshot.child("eventName").getValue().toString(), snapshot.child("eventDesc").getValue().toString(), snapshot.child("eventDate").getValue().toString(), "Public"));
+                    if(snapshot.child("eventType").getValue().toString().equals("Public")) {
+                        if (snapshot.child("eventName").getValue().toString().equals(search)) {
+                            list.add(new PublicEventSearch(snapshot.child("eventName").getValue().toString(), snapshot.child("eventDesc").getValue().toString(), snapshot.child("eventDate").getValue().toString(), "Public"));
 
+                        }
                     }
                 }
-
-                recyclerView = findViewById(R.id.rv);
-                recyclerView.setHasFixedSize(true);
-                layoutManager = new LinearLayoutManager(SearchResult.this);
-                mAdapter = new RecyclerViewAdapterSearch(list);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(mAdapter);
-
+                if(list.size()!=0) {
+                    recyclerView = findViewById(R.id.rv);
+                    recyclerView.setHasFixedSize(true);
+                    layoutManager = new LinearLayoutManager(SearchResult.this);
+                    mAdapter = new RecyclerViewAdapterSearch(list);
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(mAdapter);
+                }
+                else
+                {
+                    Nothing.setText("NO RESULT HAS BEEN FOUND....");
+                }
             }
 
             @Override
