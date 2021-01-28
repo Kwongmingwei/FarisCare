@@ -34,7 +34,7 @@ public class ViewPublicEvents extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     if (snapshot.child("eventType").getValue().toString().equals("Public")) {
-                        list.add(new PublicEventSearch(snapshot.child("eventName").getValue().toString(), snapshot.child("eventDesc").getValue().toString(), snapshot.child("eventDate").getValue().toString(), "Public"));
+                        list.add(new PublicEventSearch(snapshot.child("eventName").getValue().toString(), snapshot.child("eventDesc").getValue().toString(), snapshot.child("eventDate").getValue().toString(), "Public",snapshot.child("eventTime").getValue().toString(),"0"));
 
 
                     }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -25,7 +26,7 @@ import java.util.List;
 public class SearchResult extends AppCompatActivity {
     ArrayList <PublicEventSearch> list;
     DatabaseReference databaseReference;
-    TextView Nothing;
+    TextView Nothing,Search;
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -36,21 +37,23 @@ public class SearchResult extends AppCompatActivity {
         list=new ArrayList<>();
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Public Events");
         Nothing=findViewById(R.id.Nothing);
+        Search=findViewById(R.id.SearchResult);
         Bundle bundle = getIntent().getExtras();
         String search=bundle.getString("SearchEvent");
-
+        Search.setText("Search: "+search);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     if(snapshot.child("eventType").getValue().toString().equals("Public")) {
                         if (snapshot.child("eventName").getValue().toString().equals(search)) {
-                            list.add(new PublicEventSearch(snapshot.child("eventName").getValue().toString(), snapshot.child("eventDesc").getValue().toString(), snapshot.child("eventDate").getValue().toString(), "Public"));
+                            list.add(new PublicEventSearch(snapshot.child("eventName").getValue().toString(), snapshot.child("eventDesc").getValue().toString(), snapshot.child("eventDate").getValue().toString(), "Public",snapshot.child("eventTime").getValue().toString(),"0"));
 
                         }
                     }
                 }
                 if(list.size()!=0) {
+                    Nothing.setVisibility(View.GONE);
                     recyclerView = findViewById(R.id.rv);
                     recyclerView.setHasFixedSize(true);
                     layoutManager = new LinearLayoutManager(SearchResult.this);

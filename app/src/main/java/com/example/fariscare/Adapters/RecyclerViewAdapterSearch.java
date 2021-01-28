@@ -44,6 +44,7 @@ public class RecyclerViewAdapterSearch extends RecyclerView.Adapter<RecyclerView
         holder.EN.setText(pt.geteventName());
         holder.desc.setText(pt.getEventDesc());
         holder.DT.setText(pt.getEventDate());
+        holder.Time.setText(pt.getTime());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class RecyclerViewAdapterSearch extends RecyclerView.Adapter<RecyclerView
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView ET, EN, desc, DT;
+        public TextView ET, EN, desc, DT,Time;
         public ImageView mImageView;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,7 +62,7 @@ public class RecyclerViewAdapterSearch extends RecyclerView.Adapter<RecyclerView
             EN = itemView.findViewById(R.id.EventName);
             desc = itemView.findViewById(R.id.DESC);
             DT = itemView.findViewById(R.id.DateTime);
-
+            Time=itemView.findViewById(R.id.Time);
         }
     }
 }
