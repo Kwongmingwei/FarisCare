@@ -6,16 +6,25 @@ public class PublicEventSearch {
     private String EventDate;
     private String EventType;
     private String EventTime;
+    private String EventID;
     private String Participants;
     public PublicEventSearch(){};
 
-    public PublicEventSearch(String eventName, String eventDesc, String eventDate, String eventType, String time, String participants) {
+    public PublicEventSearch(String eventID,String eventName, String eventDesc, String eventDate, String eventType, String eventTime, String participants) {
         EventName = eventName;
         EventDesc = eventDesc;
         EventDate = eventDate;
         EventType = eventType;
-        EventTime = time;
+        EventTime = eventTime;
+        EventID=eventID;
         Participants = participants;
+    }
+    public String getEventID() {
+        return EventID;
+    }
+
+    public void setEventID(String eventID) {
+        EventID = eventID;
     }
 
     public String geteventName() {
@@ -50,11 +59,11 @@ public class PublicEventSearch {
         EventType = eventType;
     }
 
-    public String getTime() {
+    public String getEventTime() {
         return EventTime;
     }
 
-    public void setTime(String eventTime) {
+    public void setEventTime(String eventTime) {
         EventTime = eventTime;
     }
     public String getParticipants() {

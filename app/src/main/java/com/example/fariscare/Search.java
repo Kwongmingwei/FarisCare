@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class Search extends AppCompatActivity {
     Button SearchButton;
     TextView Search;
+    String uid;
     ArrayList<PublicEventSearch> list;
     DatabaseReference databaseReference;
     private static final String TAG = "Search";
@@ -31,6 +32,8 @@ public class Search extends AppCompatActivity {
         setContentView(R.layout.activity_search);
         SearchButton=(Button)findViewById(R.id.searchbutton);
         Search=findViewById(R.id.search);
+        Bundle bundle = getIntent().getExtras();
+        uid=bundle.getString("User_UID");
         SearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,6 +43,7 @@ public class Search extends AppCompatActivity {
                 {
                     Intent ResultPage = new Intent(Search.this, SearchResult.class);
                     ResultPage.putExtra("SearchEvent", eventsToSearch);
+                    ResultPage.putExtra("User_UID", uid);
                     startActivity(ResultPage);
                 }
                 else {

@@ -24,7 +24,7 @@ public class AddEvent extends AppCompatActivity {
     TextView Title,Date,Time,Notes,String1,String2,String3,String4;
     Button button;
     String uid;
-    PrivateEvent privateEvent;
+    PublicEventSearch publicEventSearch;
     long maxid=0;
     DatabaseReference databaseReference;
     @Override
@@ -46,7 +46,7 @@ public class AddEvent extends AppCompatActivity {
         String4=findViewById(R.id.notes);
         button=findViewById(R.id.add1);
         databaseReference= FirebaseDatabase.getInstance().getReference().child("Public Events");
-        privateEvent = new PrivateEvent();
+        publicEventSearch= new PublicEventSearch();
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -78,14 +78,15 @@ public class AddEvent extends AppCompatActivity {
                     return;
 
                 }
-                privateEvent.setTitle(title);
-                privateEvent.setDate(date);
-                privateEvent.setTime(time);
-                privateEvent.setNotes(note);
-                privateEvent.setParticipants(uid);
-                privateEvent.seteventType("Private");
+                publicEventSearch.setEventID(String.valueOf(maxid + 1));
+                publicEventSearch.seteventName(title);
+                publicEventSearch.setEventDate(date);
+                publicEventSearch.setEventTime(time);
+                publicEventSearch.setEventDesc(note);
+                publicEventSearch.setParticipants(uid);
+                publicEventSearch.seteventType("Private");
                 String idvalue = String.valueOf(maxid + 1);
-                databaseReference.child(idvalue).setValue(privateEvent);
+                databaseReference.child(idvalue).setValue(publicEventSearch);
                 Intent Main=new Intent(AddEvent.this,MainMenu.class);
                 Main.putExtra("User_UID", uid);
                 startActivity(Main);
