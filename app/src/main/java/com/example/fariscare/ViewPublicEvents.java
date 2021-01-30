@@ -41,7 +41,7 @@ public class ViewPublicEvents extends AppCompatActivity {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     if (snapshot.child("eventType").getValue().toString().equals("Public")) {
-                        list.add(new PublicEventSearch(snapshot.child("eventID").getValue().toString(),snapshot.child("eventName").getValue().toString(), snapshot.child("eventDesc").getValue().toString(), snapshot.child("eventDate").getValue().toString(), "Public",snapshot.child("eventTime").getValue().toString(),"0"));
+                         list.add(new PublicEventSearch(snapshot.child("eventID").getValue().toString(),snapshot.child("eventName").getValue().toString(), snapshot.child("eventDesc").getValue().toString(), snapshot.child("eventDate").getValue().toString(), "Public",snapshot.child("eventTime").getValue().toString(),"0"));
                     }
                 }
 
@@ -56,6 +56,7 @@ public class ViewPublicEvents extends AppCompatActivity {
                     public void onItemClick(int position) {
                         String name=list.get(position).geteventName();
                         String member=list.get(position).getParticipants();
+                        String id=uid;
 
                         databaseReference.addValueEventListener(new ValueEventListener() {
                             @Override
@@ -65,15 +66,18 @@ public class ViewPublicEvents extends AppCompatActivity {
                                         String [] check=snapshot.child("participants").getValue().toString().split(",");
                                         for (int i=0;i<check.length;i++)
                                         {
-                                            if(check[i].equals(uid)){
-                                                Toast.makeText(ViewPublicEvents.this, "You already join this event...", Toast.LENGTH_SHORT).show();
+                                            String x=check[i];
+                                             if(x.equals(id)){
+                                                 Toast.makeText(ViewPublicEvents.this, "You already join this event...", Toast.LENGTH_SHORT).show();
                                                 Intent View=new Intent(ViewPublicEvents.this,EventHubMain.class);
                                                 View.putExtra("User_UID", uid);
                                                 startActivity(View);
                                                 finish();
+                                                break;
                                             }
                                         }
                                         String updateUID=member+","+uid;
+                                        //Toast.makeText(ViewPublicEvents.this, "Thank you for joining"+snapshot.child("eventName").getValue().toString(), Toast.LENGTH_SHORT).show();
                                         databaseReference.child(snapshot.child("eventID").getValue().toString()).child("participants").setValue(updateUID);
                                         list.remove(list.get(position));
                                         mAdapter.notifyDataSetChanged();

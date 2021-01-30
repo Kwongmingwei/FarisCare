@@ -40,7 +40,7 @@ public class AddEvent extends AppCompatActivity {
         String2=findViewById(R.id.date);
 
         Time=findViewById(R.id.Time);
-        String3=findViewById(R.id.title1);
+        String3=findViewById(R.id.time);
 
         Notes=findViewById(R.id.Notes);
         String4=findViewById(R.id.notes);
