@@ -22,7 +22,7 @@ public class EventHubMain extends AppCompatActivity {
         Azzi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent Add=new Intent(EventHubMain.this,AddEvent.class);
+                Intent Add=new Intent(EventHubMain.this,ViewPersonalEvent.class);
                 Add.putExtra("User_UID", uid);
                 startActivity(Add);
                 finish();
