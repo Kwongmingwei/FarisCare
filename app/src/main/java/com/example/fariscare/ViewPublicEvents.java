@@ -68,7 +68,6 @@ public class ViewPublicEvents extends AppCompatActivity {
                                         {
                                             String x=check[i];
                                              if(x.equals(id)){
-                                                 Toast.makeText(ViewPublicEvents.this, "You already join this event...", Toast.LENGTH_SHORT).show();
                                                 Intent View=new Intent(ViewPublicEvents.this,EventHubMain.class);
                                                 View.putExtra("User_UID", uid);
                                                 startActivity(View);

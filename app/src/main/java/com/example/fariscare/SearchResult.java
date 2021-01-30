@@ -79,7 +79,6 @@ public class SearchResult extends AppCompatActivity {
                                             for (int i=0;i<check.length;i++)
                                             {
                                                 if(check[i].equals(uid)){
-                                                    Toast.makeText(SearchResult.this, "You already join this event...", Toast.LENGTH_SHORT).show();
                                                     Intent View=new Intent(SearchResult.this,EventHubMain.class);
                                                     View.putExtra("User_UID", uid);
                                                     startActivity(View);
