@@ -21,6 +21,7 @@
         <activity android:name=".EventHubMain" />
         <activity android:name=".AddEvent" />
         <activity android:name=".ApiPage" />
+        <activity android:name=".CallScreen" />
         <activity android:name=".EditProfilePage" />
         <activity android:name=".ProfilePage" />
         <activity android:name=".RegisterPt2" />
@@ -29,6 +30,7 @@
         <activity android:name=".MainMenu" />
         <activity android:name=".Search" />
         <activity android:name=".SearchResult" />
+        <activity android:name=".LanguageSettings" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

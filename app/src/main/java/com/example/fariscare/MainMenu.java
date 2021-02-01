@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ public class MainMenu extends AppCompatActivity {
     Button socialButton;
     Button apiButton;
     Button eventButton;
+    ImageButton langButton;
     String eContact,uid;
     TextView address,name,dob;
     DatabaseReference databaseReference;
@@ -70,6 +72,7 @@ public class MainMenu extends AppCompatActivity {
         dob=findViewById(R.id.DOBHome);
         address=findViewById(R.id.AddressHome);
         call=findViewById(R.id.imageView4);
+        langButton = (ImageButton)findViewById(R.id.langbutton);
         Bundle bundle = getIntent().getExtras();
         uid=bundle.getString("User_UID");
         Log.v("Menu","Emergency contact: "+eContact);
@@ -132,6 +135,13 @@ public class MainMenu extends AppCompatActivity {
             public void onClick(View v) {
                 Intent covidApi = new Intent(MainMenu.this, ApiPage.class);
                 startActivity(covidApi);
+            }
+        });
+        langButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainMenu.this, LanguageSettings.class);
+                startActivity(intent);
             }
         });
 

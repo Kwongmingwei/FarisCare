@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:text="Private Events"
+            android:text="@string/PrivateEvents"
             android:textColor="#FFD246"
             android:textSize="40dp"
             android:layout_marginLeft="50dp"
@@ -40,7 +40,7 @@
             android:background="#2768A5"
             android:textColor="#FFFFFF"
             android:padding="9dp"
-            android:text="Title"
+            android:text="@string/Title"
             android:textSize="25dp"
             android:textStyle="bold"/>
         <EditText
@@ -65,7 +65,7 @@
             android:background="#2768A5"
             android:textColor="#FFFFFF"
             android:padding="9dp"
-            android:text="Date"
+            android:text="@string/Date"
             android:textSize="25dp"
             android:textStyle="bold"/>
         <EditText
@@ -90,7 +90,7 @@
             android:backgroundTint="#2768A5"
             android:textColor="#FFFFFF"
             android:padding="9dp"
-            android:text="Time"
+            android:text="@string/Time"
             android:textSize="25dp"
             android:textStyle="bold"/>
         <EditText
@@ -115,7 +115,7 @@
             android:backgroundTint="#2768A5"
             android:textColor="#FFFFFF"
             android:padding="9dp"
-            android:text="Notes"
+            android:text="@string/Notes"
             android:textSize="25dp"
             android:textStyle="bold"/>
 
@@ -136,7 +136,7 @@
             android:id="@+id/add1"
             android:layout_width="191dp"
             android:layout_height="wrap_content"
-            android:text="Add Event"
+            android:text="@string/AddEvent"
             android:layout_marginLeft="80dp"
             />
 

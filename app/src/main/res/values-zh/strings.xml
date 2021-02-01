@@ -40,4 +40,18 @@
     <string name="TotalRecoveredCases">重大的紧急病例:</string>
     <string name="LastUpdatedOn">上次更新时间:</string>
     <string name="ChangeLanguage">"改变语言 "</string>
+    <string name="Language">语言</string>
+    <string name="PublicEventToSearch">"搜索活动 "</string>
+    <string name="Search">搜索</string>
+    <string name="PrivateEvents">私人活动</string>
+    <string name="Title">标题</string>
+    <string name="Date">日期</string>
+    <string name="Time" translatable="false">时间</string>
+    <string name="Notes">笔记</string>
+    <string name="AddEvent">添加事件</string>
+    <string name="endcall">结束通话</string>
+    <string name="YourEvent">您的活动</string>
+    <string name="ViewPublicEvents">" 查看公开活动"</string>
+    <string name="SearchPublicEvents">"搜索活动 "</string>
+    <string name="YourEvents">您的活动</string>
 </resources>

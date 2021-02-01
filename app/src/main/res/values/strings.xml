@@ -39,6 +39,21 @@
     <string name="TotalRecoveredCases">"Total Recovered Cases: "</string>
     <string name="LastUpdatedOn">Last Updated On:</string>
     <string name="ChangeLanguage">Change Language</string>
+    <string name="Language">Language</string>
+    <string name="PublicEventToSearch">Public Event To Search</string>
+    <string name="Search">Search</string>
+    <string name="PrivateEvents">Private Events</string>
+    <string name="Title">Title</string>
+    <string name="Date">Date</string>
+    <string name="Time">Time</string>
+    <string name="Notes">Notes</string>
+    <string name="AddEvent">Add Event</string>
+    <string name="endcall">End Call</string>
+    <string name="YourEvent">Your Event</string>
+    <string name="ViewPublicEvents">View Public Events</string>
+    <string name="SearchPublicEvents">Search Public Events</string>
+    <string name="YourEvents">Your Events</string>
+    <string name="EventName" translatable="false">Event Name</string>
     <string-array name="languages">
         <item>Select Language:</item>
         <item>en</item>

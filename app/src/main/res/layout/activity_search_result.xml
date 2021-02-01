@@ -13,7 +13,7 @@
         android:layout_height="200dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:text="Search"
+        android:text="@string/Search"
         android:textColor="#fff"
         android:textSize="50dp"
         android:textStyle="bold"

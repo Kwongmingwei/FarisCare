@@ -3,12 +3,18 @@ package com.example.fariscare;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.util.EventLog;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +32,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG="Recycler View ItemList";
     public Context logincontext;
-    Button loginbutton;
+    Button loginbutton, langbutton;
     TextView register;
     EditText EnterEmail,EnterPassword;
     Button LoginButton;
@@ -41,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     String uid;
     DatabaseReference databaseReference;
     ProgressBar progressBar;
+
 
     public MainActivity(Context context)
     {
@@ -60,6 +70,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Auto_login=getSharedPreferences("LoginButton",MODE_PRIVATE);
         setContentView(R.layout.activity_main);
+        loginbutton = (Button) findViewById(R.id.LoginButton);
+        register = (TextView) findViewById(R.id.Register);
+        EnterEmail = findViewById(R.id.EnterEmail);
+        EnterPassword = findViewById(R.id.EnterPassword);
+        Auth = FirebaseAuth.getInstance();
+        progressBar = findViewById(R.id.progressBar);
+        langbutton = findViewById(R.id.langbutton);
+        user = Auth.getCurrentUser();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Member");
+        loadLocale();
+        //chris
         loginbutton=(Button)findViewById(R.id.LoginButton);
         register=(TextView)findViewById(R.id.Register);
         EnterEmail=findViewById(R.id.EnterEmail);
@@ -82,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);
                         MainActivity.putExtra("User_UID", uid);
                         startActivity(MainActivity);
+                        finish();
                     }
                 }
 
@@ -153,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
 
                                 }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                 }
@@ -179,6 +202,47 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(RegisterIntent);
             }
         });
+        //Faris
+        Spinner spinner = findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence>adapter = ArrayAdapter.createFromResource(this,R.array.languages, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        langbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String lang = spinner.getSelectedItem().toString();
+                Toast.makeText(MainActivity.this,lang,Toast.LENGTH_SHORT).show();
+                setLocale(lang);
+                setAppLocale(lang);
+                recreate();
+            }
+        });
 
     }
+    //Faris, changes locale and language
+    private void setAppLocale(String localeCode){
+        Resources resources = getResources();
+        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
+        Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(new Locale(localeCode.toLowerCase()));
+        resources.updateConfiguration(configuration, displayMetrics);
+        configuration.locale = new Locale(localeCode.toLowerCase());
+        resources.updateConfiguration(configuration, displayMetrics);
+    }
+    private void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,getBaseContext().getResources().getDisplayMetrics());
+        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
+        editor.putString("Lang", lang);
+        editor.apply();
+    }
+    private void loadLocale(){
+        SharedPreferences prefs = getSharedPreferences("Settings",MODE_PRIVATE);
+        String lang = prefs.getString("Lang","");
+        setLocale(lang);
+    }
+
 }

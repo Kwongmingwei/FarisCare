@@ -40,4 +40,18 @@
     <string name="ChangeLanguage">Tukar Bahasa</string>
     <string name="CurrentStableCases">Kes Stabil Semasa:</string>
     <string name="LastUpdatedOn">Terakhir Dikemaskini:</string>
+    <string name="Language">Bahasa</string>
+    <string name="PrivateEvents">Acara Swasta</string>
+    <string name="Search">Cari</string>
+    <string name="PublicEventToSearch">Cari Acara Awam</string>
+    <string name="Title">Tajuk</string>
+    <string name="Date">Tarikh</string>
+    <string name="Time">Masa</string>
+    <string name="Notes">Catatan</string>
+    <string name="AddEvent">Tambah Acara</string>
+    <string name="endcall">Tamat Panggilan</string>
+    <string name="YourEvent">Acara Anda</string>
+    <string name="ViewPublicEvents">Lihatkan Acara Awam</string>
+    <string name="SearchPublicEvents">Cari Acara Awam</string>
+    <string name="YourEvents">Acara Anda</string>
 </resources>
