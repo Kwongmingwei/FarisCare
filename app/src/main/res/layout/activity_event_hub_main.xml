@@ -53,4 +53,20 @@
         android:background="@drawable/rounded"
         android:textColor="#FFF"
         />
+    <Button
+        android:id="@+id/BackToHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="110dp"
+        android:layout_marginTop="400dp"
+        android:width="200dp"
+        android:height="80dp"
+        android:text="Back To Home"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="114dp"
+        tools:layout_editor_absoluteY="539dp"
+        android:textSize="15dp"
+        android:background="@drawable/rounded"
+        android:textColor="#FFF"
+        />
 </RelativeLayout>

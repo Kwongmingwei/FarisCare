@@ -72,7 +72,6 @@ public class MainMenu extends AppCompatActivity {
         dob=findViewById(R.id.DOBHome);
         address=findViewById(R.id.AddressHome);
         call=findViewById(R.id.imageView4);
-        langButton = (ImageButton)findViewById(R.id.langbutton);
         Bundle bundle = getIntent().getExtras();
         uid=bundle.getString("User_UID");
         Log.v("Menu","Emergency contact: "+eContact);
@@ -121,14 +120,7 @@ public class MainMenu extends AppCompatActivity {
 
         });
         sinchClient.start();
-        call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestAudioPermissions();
-                Intent social = new Intent(MainMenu.this, OCall.class);
-                startActivity(social);
-            }
-            });
+
 
         apiButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,13 +129,7 @@ public class MainMenu extends AppCompatActivity {
                 startActivity(covidApi);
             }
         });
-        langButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainMenu.this, LanguageSettings.class);
-                startActivity(intent);
-            }
-        });
+
 
         socialButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -64,13 +64,10 @@ public class ViewPersonalEvent extends AppCompatActivity {
                     recyclerView.setAdapter(mAdapter);
 
                 }
-                else
-                {
-                    Intent View=new Intent(ViewPersonalEvent.this,ViewPublicEvents.class);
-                    View.putExtra("User_UID", uid);
-                    startActivity(View);
-                    finish();
+                else{
+                    Nothing.setText("No events yet");
                 }
+
             }
 
             @Override

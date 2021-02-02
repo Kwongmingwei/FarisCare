@@ -92,28 +92,23 @@ public class MainActivity extends AppCompatActivity {
 
         //Auto_login.edit().putBoolean("logged",false).apply();
         //Chris - User is already logged in
-        if(Auto_login.getBoolean("logged",false)){
-            databaseReference.orderByChild("email").equalTo(user.getEmail()).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        //Chris - get uid from shared preferences
-                        uid = Auto_login.getString("UserID", null);
-                        Log.v(TAG,"the user id sent= " + uid);
-                        Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);
-                        MainActivity.putExtra("User_UID", uid);
-                        startActivity(MainActivity);
-                        finish();
-                    }
-                }
+        if(Auto_login.getBoolean("logged",false)) {
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
+            uid = Auto_login.getString("UserID", null);
+            Log.v(TAG, "Auto Login true "+user.getEmail()+" "+uid);
 
-                }
+            Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);
+            MainActivity.putExtra("User_UID", uid);
+            startActivity(MainActivity);
+            finish();
 
-                ;
-            });
+
+
+
+
+        }
+        else{
+            Log.v(TAG, "Auto Login false");
         }
 
         loginbutton.setOnClickListener(new View.OnClickListener(){
@@ -167,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                                         ToMenuPage.putExtra("User_UID", uid);
                                         ToMenuPage.putExtra("emergency", emergencycontact);
                                         Auto_login.edit().putBoolean("logged", true).apply();
+                                        Log.v(TAG,"Auto Login Enabled");
                                         Log.v(TAG, "sending this uid to main activity " + uid);
                                         startActivity(ToMenuPage);
                                         finish();

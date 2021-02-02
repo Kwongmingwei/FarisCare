@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -59,19 +58,17 @@ public class OCall extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_o_call);
-        contactsRecycler=(RecyclerView)findViewById(R.id.contactRecyclerView);
+        contactsRecycler = (RecyclerView) findViewById(R.id.contactRecyclerView);
         contactsRecycler.setHasFixedSize(true);
         contactsRecycler.setLayoutManager(new LinearLayoutManager(this));
 
-        memberArrayList=new ArrayList<>();
-        reference= FirebaseDatabase.getInstance().getReference().child("Member");
-        auth=FirebaseAuth.getInstance();
-        firebaseUser =auth.getCurrentUser();
+        memberArrayList = new ArrayList<>();
+        reference = FirebaseDatabase.getInstance().getReference().child("Member");
+        auth = FirebaseAuth.getInstance();
+        firebaseUser = auth.getCurrentUser();
 
 
-
-
-        sinchClient= Sinch.getSinchClientBuilder().context(this)
+        sinchClient = Sinch.getSinchClientBuilder().context(this)
                 .userId(firebaseUser.getUid())
                 .applicationKey("63cc94ee-d4f8-4805-8938-6067e98fc8fa")
                 .applicationSecret("t1FsM6t2k0+Pq8hKPzW3sQ==").environmentHost("clientapi.sinch.com").build();
@@ -80,16 +77,21 @@ public class OCall extends AppCompatActivity {
         sinchClient.startListeningOnActiveConnection();
 
 
-        sinchClient.getCallClient().addCallClientListener(new SinchCallClientListener(){
-            public void onClientStarted(SinchClient client) { }
+        sinchClient.getCallClient().addCallClientListener(new SinchCallClientListener() {
+            public void onClientStarted(SinchClient client) {
+            }
 
-            public void onClientStopped(SinchClient client) { }
+            public void onClientStopped(SinchClient client) {
+            }
 
-            public void onClientFailed(SinchClient client, SinchError error) { }
+            public void onClientFailed(SinchClient client, SinchError error) {
+            }
 
-            public void onRegistrationCredentialsRequired(SinchClient client, ClientRegistration registrationCallback) { }
+            public void onRegistrationCredentialsRequired(SinchClient client, ClientRegistration registrationCallback) {
+            }
 
-            public void onLogMessage(int level, String area, String message) { }
+            public void onLogMessage(int level, String area, String message) {
+            }
 
         });
         sinchClient.start();
@@ -97,19 +99,19 @@ public class OCall extends AppCompatActivity {
         fetchAllUsers();
     }
 
-    private void fetchAllUsers(){
+    private void fetchAllUsers() {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 memberArrayList.clear();
-                for (DataSnapshot des:dataSnapshot.getChildren()){
-                    Member member=des.getValue(Member.class);
+                for (DataSnapshot des : dataSnapshot.getChildren()) {
+                    Member member = des.getValue(Member.class);
                     memberArrayList.add(member);
                 }
 
 
-                AllUsersAdapter adapter=new AllUsersAdapter(OCall.this,memberArrayList);
-                int spanCount=pxToDp(getScreenWidth())/120;
+                AllUsersAdapter adapter = new AllUsersAdapter(OCall.this, memberArrayList);
+                int spanCount = pxToDp(getScreenWidth()) / 120;
                 Log.v(TAG, "span count is " + spanCount);
                 GridLayoutManager gLayoutManager = new GridLayoutManager(OCall.this, spanCount);
                 contactsRecycler.setLayoutManager(gLayoutManager);
@@ -161,9 +163,7 @@ public class OCall extends AppCompatActivity {
     }
 
 
-
-
-    private class SinchCallClientListener implements CallClientListener{
+    private class SinchCallClientListener implements CallClientListener {
 
         @Override
         public void onIncomingCall(CallClient callClient, final Call incomingcall) {
@@ -201,34 +201,15 @@ public class OCall extends AppCompatActivity {
             call = sinchClient.getCallClient().callUser(member.getUserID());
             call.addCallListener(new SinchCallListener());
 
-            openCallerDialog(call, member);
+            openCallerDialog(call);
         }
     }
 
-    private void openCallerDialog(final Call call, Member member){
-        /**
-
-
-         AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
+    private void openCallerDialog(final Call call) {
+        AlertDialog alertDialogCall = new AlertDialog.Builder(OCall.this).create();
         alertDialogCall.setTitle("Alert");
         alertDialogCall.setMessage("Calling...");
-        alertDialogCall.setButton(AlertDialog.BUTTON_POSITIVE, "SPEAKER TOGGLE", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-                if (audioManager.isSpeakerphoneOn()){
-                    audioManager.setSpeakerphoneOn(false);
-                    Toast.makeText(getApplicationContext(),"Speakerphone off",Toast.LENGTH_LONG).show();
-
-                }
-                else{
-                    audioManager.setSpeakerphoneOn(true);
-                    Toast.makeText(getApplicationContext(),"Speakerphone on",Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        alertDialogCall.setButton(AlertDialog.BUTTON_NEGATIVE, "lol", new DialogInterface.OnClickListener() {
+        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "HANG UP", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -236,26 +217,26 @@ public class OCall extends AppCompatActivity {
             }
         });
 
+        alertDialogCall.show();
+    }
+}
+/*
+    private void openCallerDialog(final Call call, Member member) {
 
-        alertDialogCall.show();**/
-
-        //Faris Call UI
         AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
         audioManager.setMode(AudioManager.MODE_IN_CALL);
         AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
         LayoutInflater inflater = this.getLayoutInflater();
         View view = inflater.inflate(R.layout.activity_call_screen, null);
-
         alertDialogCall.setView(view);
-        Button hangup = (Button)view.findViewById(R.id.hangup);
-        ImageButton speaker = (ImageButton)view.findViewById(R.id.speaker);
-        TextView name = (TextView)view.findViewById(R.id.name);
+        Button hangup = (Button)findViewById(R.id.hangup);
+        ImageButton speaker = (ImageButton)findViewById(R.id.speaker);
+        TextView name = (TextView)findViewById(R.id.name);
         hangup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialogCall.dismiss();
                 call.hangup();
-                Toast.makeText(getApplicationContext(),"Speakerphone off",Toast.LENGTH_LONG).show();
             }
         });
         speaker.setOnClickListener(new View.OnClickListener() {
@@ -264,22 +245,90 @@ public class OCall extends AppCompatActivity {
                 AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
                 if (audioManager.isSpeakerphoneOn()){
                     audioManager.setSpeakerphoneOn(false);
-                    Toast.makeText(getApplicationContext(),"Speakerphone off",Toast.LENGTH_LONG).show();
-
                 }
                 else{
                     audioManager.setSpeakerphoneOn(true);
-                    Toast.makeText(getApplicationContext(),"Speakerphone on",Toast.LENGTH_LONG).show();
                 }
 
             }
         });
         name.setText(member.getName());
-        int width = ViewGroup.LayoutParams.MATCH_PARENT;
-        int height = ViewGroup.LayoutParams.MATCH_PARENT;
-        alertDialogCall.getWindow().setLayout(width, height);
         alertDialogCall.show();
+    }
+    }
+/*
+        AlertDialog alertDialogCall = new AlertDialog.Builder(OCall.this).create();
+        alertDialogCall.setTitle("Alert");
+        alertDialogCall.setMessage("Calling...");
+        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "SPEAKER TOGGLE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                if (audioManager.isSpeakerphoneOn()) {
+                    audioManager.setSpeakerphoneOn(false);
+                    Toast.makeText(getApplicationContext(), "Speakerphone off", Toast.LENGTH_LONG).show();
+                } else {
+                    audioManager.setSpeakerphoneOn(true);
+                    Toast.makeText(getApplicationContext(), "Speakerphone on", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "MIC TOGGLE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                if (audioManager.isMicrophoneMute()) {
+                    audioManager.setMicrophoneMute(false);
+                    Toast.makeText(getApplicationContext(), "Mic On", Toast.LENGTH_LONG).show();
+                } else {
+                    audioManager.setMicrophoneMute(true);
+                    Toast.makeText(getApplicationContext(), "Mic off", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "HANG UP", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                call.hangup();
+            }
+        });
 
 
+        alertDialogCall.show();
     }
 }
+
+        //Faris Call UI
+        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+        audioManager.setMode(AudioManager.MODE_IN_CALL);
+        AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.activity_call_screen, null);
+        alertDialogCall.setView(view);
+        Button hangup = (Button)findViewById(R.id.hangup);
+        ImageButton speaker = (ImageButton)findViewById(R.id.speaker);
+        TextView name = (TextView)findViewById(R.id.name);
+        hangup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialogCall.dismiss();
+                call.hangup();
+            }
+        });
+        speaker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                if (audioManager.isSpeakerphoneOn()){
+                    audioManager.setSpeakerphoneOn(false);
+                }
+                else{
+                    audioManager.setSpeakerphoneOn(true);
+                }
+
+            }
+        });
+        name.setText(member.getName());
+        alertDialogCall.show();
+    } **/
