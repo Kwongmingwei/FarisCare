@@ -1,0 +1,885 @@
+Index: app/src/main/java/com/example/fariscare/OCall.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fariscare;\r\n\r\nimport android.content.Context;\r\nimport android.content.DialogInterface;\r\nimport android.content.res.Resources;\r\nimport android.media.AudioManager;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.ImageButton;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AlertDialog;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.GridLayoutManager;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.example.fariscare.Adapters.AllUsersAdapter;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.auth.FirebaseUser;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\nimport com.sinch.android.rtc.ClientRegistration;\r\nimport com.sinch.android.rtc.PushPair;\r\nimport com.sinch.android.rtc.Sinch;\r\nimport com.sinch.android.rtc.SinchClient;\r\nimport com.sinch.android.rtc.SinchError;\r\nimport com.sinch.android.rtc.calling.Call;\r\nimport com.sinch.android.rtc.calling.CallClient;\r\nimport com.sinch.android.rtc.calling.CallClientListener;\r\nimport com.sinch.android.rtc.calling.CallListener;\r\n\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\n\r\npublic class OCall extends AppCompatActivity {\r\n\r\n    final static String TAG = \"OCall.java\";\r\n\r\n    RecyclerView contactsRecycler;\r\n    FirebaseAuth auth;\r\n    FirebaseUser firebaseUser;\r\n    SinchClient sinchClient;\r\n    Call call;\r\n    ArrayList<Member> memberArrayList;\r\n    DatabaseReference reference;\r\n\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_o_call);\r\n        contactsRecycler=(RecyclerView)findViewById(R.id.contactRecyclerView);\r\n        contactsRecycler.setHasFixedSize(true);\r\n        contactsRecycler.setLayoutManager(new LinearLayoutManager(this));\r\n\r\n        memberArrayList=new ArrayList<>();\r\n        reference= FirebaseDatabase.getInstance().getReference().child(\"Member\");\r\n        auth=FirebaseAuth.getInstance();\r\n        firebaseUser =auth.getCurrentUser();\r\n\r\n\r\n\r\n\r\n        sinchClient= Sinch.getSinchClientBuilder().context(this)\r\n                .userId(firebaseUser.getUid())\r\n                .applicationKey(\"63cc94ee-d4f8-4805-8938-6067e98fc8fa\")\r\n                .applicationSecret(\"t1FsM6t2k0+Pq8hKPzW3sQ==\").environmentHost(\"clientapi.sinch.com\").build();\r\n\r\n        sinchClient.setSupportCalling(true);\r\n        sinchClient.startListeningOnActiveConnection();\r\n\r\n\r\n        sinchClient.getCallClient().addCallClientListener(new SinchCallClientListener(){\r\n            public void onClientStarted(SinchClient client) { }\r\n\r\n            public void onClientStopped(SinchClient client) { }\r\n\r\n            public void onClientFailed(SinchClient client, SinchError error) { }\r\n\r\n            public void onRegistrationCredentialsRequired(SinchClient client, ClientRegistration registrationCallback) { }\r\n\r\n            public void onLogMessage(int level, String area, String message) { }\r\n\r\n        });\r\n        sinchClient.start();\r\n\r\n        fetchAllUsers();\r\n    }\r\n\r\n    private void fetchAllUsers(){\r\n        reference.addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {\r\n                memberArrayList.clear();\r\n                for (DataSnapshot des:dataSnapshot.getChildren()){\r\n                    Member member=des.getValue(Member.class);\r\n                    memberArrayList.add(member);\r\n                }\r\n\r\n\r\n                AllUsersAdapter adapter=new AllUsersAdapter(OCall.this,memberArrayList);\r\n                int spanCount=pxToDp(getScreenWidth())/120;\r\n                Log.v(TAG, \"span count is \" + spanCount);\r\n                GridLayoutManager gLayoutManager = new GridLayoutManager(OCall.this, spanCount);\r\n                contactsRecycler.setLayoutManager(gLayoutManager);\r\n                contactsRecycler.setAdapter(adapter);\r\n                adapter.notifyDataSetChanged();\r\n            }\r\n\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError databaseError) {\r\n                Toast.makeText(getApplicationContext(),databaseError.getMessage(),Toast.LENGTH_LONG).show();\r\n            }\r\n        });\r\n    }\r\n\r\n    public static int pxToDp(int px) {\r\n        return (int) (px / Resources.getSystem().getDisplayMetrics().density);\r\n    }\r\n\r\n    // Get current screen width in px\r\n    public static int getScreenWidth() {\r\n        Log.v(TAG,\"Screen width in px : \"+(Resources.getSystem().getDisplayMetrics().widthPixels));\r\n        return Resources.getSystem().getDisplayMetrics().widthPixels;\r\n    }\r\n\r\n\r\n\r\n    private class SinchCallListener implements CallListener{\r\n\r\n        @Override\r\n        public void onCallProgressing(Call call) {\r\n            Toast.makeText(getApplicationContext(),\"Ring ring\",Toast.LENGTH_LONG).show();\r\n        }\r\n\r\n        @Override\r\n        public void onCallEstablished(Call call) {\r\n            Toast.makeText(getApplicationContext(),\"Call connected\",Toast.LENGTH_SHORT).show();\r\n        }\r\n\r\n        @Override\r\n        public void onCallEnded(Call endedcall) {\r\n            Toast.makeText(getApplicationContext(),\"Call ended\",Toast.LENGTH_SHORT).show();\r\n            call=null;\r\n            endedcall.hangup();\r\n        }\r\n\r\n        @Override\r\n        public void onShouldSendPushNotification(Call call, List<PushPair> list) {\r\n\r\n        }\r\n    }\r\n\r\n\r\n\r\n\r\n    private class SinchCallClientListener implements CallClientListener{\r\n\r\n        @Override\r\n        public void onIncomingCall(CallClient callClient, final Call incomingcall) {\r\n\r\n            AlertDialog alertDialog =new AlertDialog.Builder(OCall.this).create();\r\n            alertDialog.setTitle(\"Calling...\");\r\n            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, \"Reject\", new DialogInterface.OnClickListener() {\r\n                @Override\r\n                public void onClick(DialogInterface dialog, int which) {\r\n                    call=incomingcall;\r\n                    dialog.dismiss();\r\n                    call.hangup();\r\n                }\r\n            });\r\n            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, \"Pick up\", new DialogInterface.OnClickListener() {\r\n                @Override\r\n                public void onClick(DialogInterface dialog, int which) {\r\n                    call=incomingcall;\r\n                    AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);\r\n                    audioManager.setMode(AudioManager.MODE_IN_CALL);\r\n                    call.answer();\r\n                    call.addCallListener(new SinchCallListener());\r\n                    Toast.makeText(getApplicationContext(),\"Call is answered\",Toast.LENGTH_LONG).show();\r\n                }\r\n            });\r\n\r\n            alertDialog.show();\r\n        }\r\n    }\r\n\r\n    public void callUser(Member member){\r\n        if (call== null){\r\n            Log.v(TAG,\"CALL IS NULL\");\r\n            Log.v(TAG,\"USERID of calling person is\"+member.getUserID());\r\n            call=sinchClient.getCallClient().callUser(member.getUserID());\r\n            call.addCallListener(new SinchCallListener());\r\n\r\n            openCallerDialog(call, member);\r\n        }\r\n    }\r\n\r\n    private void openCallerDialog(final Call call, Member member){\r\n        /**\r\n        AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();\r\n        alertDialogCall.setTitle(\"Alert\");\r\n        alertDialogCall.setMessage(\"Calling...\");\r\n        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, \"SPEAKER TOGGLE\", new DialogInterface.OnClickListener() {\r\n            @Override\r\n            public void onClick(DialogInterface dialog, int which) {\r\n                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);\r\n                if (audioManager.isSpeakerphoneOn()){\r\n                    audioManager.setSpeakerphoneOn(false);\r\n                    Toast.makeText(getApplicationContext(),\"Speakerphone off\",Toast.LENGTH_LONG).show();\r\n                }\r\n                else{\r\n                    audioManager.setSpeakerphoneOn(true);\r\n                    Toast.makeText(getApplicationContext(),\"Speakerphone on\",Toast.LENGTH_LONG).show();\r\n                }\r\n            }\r\n        });\r\n        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, \"MIC TOGGLE\", new DialogInterface.OnClickListener() {\r\n            @Override\r\n            public void onClick(DialogInterface dialog, int which) {\r\n                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);\r\n                if (audioManager.isMicrophoneMute()){\r\n                    audioManager.setMicrophoneMute(false);\r\n                    Toast.makeText(getApplicationContext(),\"Mic On\",Toast.LENGTH_LONG).show();\r\n                }\r\n                else{\r\n                    audioManager.setMicrophoneMute(true);\r\n                    Toast.makeText(getApplicationContext(),\"Mic off\",Toast.LENGTH_LONG).show();\r\n                }\r\n            }\r\n        });\r\n        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, \"HANG UP\", new DialogInterface.OnClickListener() {\r\n            @Override\r\n            public void onClick(DialogInterface dialog, int which) {\r\n                dialog.dismiss();\r\n                call.hangup();\r\n            }\r\n        });\r\n\r\n\r\n        alertDialogCall.show(); **/\r\n\r\n        //Faris Call UI\r\n        AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);\r\n        audioManager.setMode(AudioManager.MODE_IN_CALL);\r\n        AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();\r\n        LayoutInflater inflater = this.getLayoutInflater();\r\n        View view = inflater.inflate(R.layout.activity_call_screen, null);\r\n        alertDialogCall.setView(view);\r\n        Button hangup = (Button)findViewById(R.id.hangup);\r\n        ImageButton speaker = (ImageButton)findViewById(R.id.speaker);\r\n        TextView name = (TextView)findViewById(R.id.name);\r\n        hangup.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                alertDialogCall.dismiss();\r\n                call.hangup();\r\n            }\r\n        });\r\n        speaker.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);\r\n                if (audioManager.isSpeakerphoneOn()){\r\n                    audioManager.setSpeakerphoneOn(false);\r\n                }\r\n                else{\r\n                    audioManager.setSpeakerphoneOn(true);\r\n                }\r\n\r\n            }\r\n        });\r\n        name.setText(member.getName());\r\n        alertDialogCall.show();\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/fariscare/OCall.java	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/java/com/example/fariscare/OCall.java	(date 1612070093006)
+@@ -8,6 +8,7 @@
+ import android.util.Log;
+ import android.view.LayoutInflater;
+ import android.view.View;
++import android.view.ViewGroup;
+ import android.widget.Button;
+ import android.widget.ImageButton;
+ import android.widget.TextView;
+@@ -207,16 +208,19 @@
+ 
+     private void openCallerDialog(final Call call, Member member){
+         /**
+-        AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
++
++
++         AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
+         alertDialogCall.setTitle("Alert");
+         alertDialogCall.setMessage("Calling...");
+-        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "SPEAKER TOGGLE", new DialogInterface.OnClickListener() {
++        alertDialogCall.setButton(AlertDialog.BUTTON_POSITIVE, "SPEAKER TOGGLE", new DialogInterface.OnClickListener() {
+             @Override
+             public void onClick(DialogInterface dialog, int which) {
+                 AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                 if (audioManager.isSpeakerphoneOn()){
+                     audioManager.setSpeakerphoneOn(false);
+                     Toast.makeText(getApplicationContext(),"Speakerphone off",Toast.LENGTH_LONG).show();
++
+                 }
+                 else{
+                     audioManager.setSpeakerphoneOn(true);
+@@ -224,21 +228,8 @@
+                 }
+             }
+         });
+-        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "MIC TOGGLE", new DialogInterface.OnClickListener() {
+-            @Override
+-            public void onClick(DialogInterface dialog, int which) {
+-                AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+-                if (audioManager.isMicrophoneMute()){
+-                    audioManager.setMicrophoneMute(false);
+-                    Toast.makeText(getApplicationContext(),"Mic On",Toast.LENGTH_LONG).show();
+-                }
+-                else{
+-                    audioManager.setMicrophoneMute(true);
+-                    Toast.makeText(getApplicationContext(),"Mic off",Toast.LENGTH_LONG).show();
+-                }
+-            }
+-        });
+-        alertDialogCall.setButton(AlertDialog.BUTTON_NEUTRAL, "HANG UP", new DialogInterface.OnClickListener() {
++
++        alertDialogCall.setButton(AlertDialog.BUTTON_NEGATIVE, "lol", new DialogInterface.OnClickListener() {
+             @Override
+             public void onClick(DialogInterface dialog, int which) {
+                 dialog.dismiss();
+@@ -247,7 +238,7 @@
+         });
+ 
+ 
+-        alertDialogCall.show(); **/
++        alertDialogCall.show();**/
+ 
+         //Faris Call UI
+         AudioManager audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+@@ -255,15 +246,17 @@
+         AlertDialog alertDialogCall=new AlertDialog.Builder(OCall.this).create();
+         LayoutInflater inflater = this.getLayoutInflater();
+         View view = inflater.inflate(R.layout.activity_call_screen, null);
++
+         alertDialogCall.setView(view);
+-        Button hangup = (Button)findViewById(R.id.hangup);
+-        ImageButton speaker = (ImageButton)findViewById(R.id.speaker);
+-        TextView name = (TextView)findViewById(R.id.name);
++        Button hangup = (Button)view.findViewById(R.id.hangup);
++        ImageButton speaker = (ImageButton)view.findViewById(R.id.speaker);
++        TextView name = (TextView)view.findViewById(R.id.name);
+         hangup.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 alertDialogCall.dismiss();
+                 call.hangup();
++                Toast.makeText(getApplicationContext(),"Speakerphone off",Toast.LENGTH_LONG).show();
+             }
+         });
+         speaker.setOnClickListener(new View.OnClickListener() {
+@@ -272,14 +265,22 @@
+                 AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                 if (audioManager.isSpeakerphoneOn()){
+                     audioManager.setSpeakerphoneOn(false);
++                    Toast.makeText(getApplicationContext(),"Speakerphone off",Toast.LENGTH_LONG).show();
++
+                 }
+                 else{
+                     audioManager.setSpeakerphoneOn(true);
++                    Toast.makeText(getApplicationContext(),"Speakerphone on",Toast.LENGTH_LONG).show();
+                 }
+ 
+             }
+         });
+         name.setText(member.getName());
++        int width = ViewGroup.LayoutParams.MATCH_PARENT;
++        int height = ViewGroup.LayoutParams.MATCH_PARENT;
++        alertDialogCall.getWindow().setLayout(width, height);
+         alertDialogCall.show();
++
++
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\r\n    <string name=\"app_name\">FarisCare</string>\r\n    <string name=\"title_activity_call_screen\" translatable=\"false\">call_screen</string>\r\n    <!-- Strings used for fragments for navigation -->\r\n    <string name=\"first_fragment_label\" translatable=\"false\">First Fragment</string>\r\n    <string name=\"second_fragment_label\" translatable=\"false\">Second Fragment</string>\r\n    <string name=\"next\">Next</string>\r\n    <string name=\"previous\">Previous</string>\r\n\r\n    <string name=\"hello_first_fragment\" translatable=\"false\">Hello first fragment</string>\r\n    <string name=\"hello_second_fragment\" translatable=\"false\">Hello second fragment. Arg: %1$s</string>\r\n    <string name=\"Name\">Name</string>\r\n    <string name=\"Date_Of_Birth\">Date Of Birth</string>\r\n    <string name=\"Address\">Address</string>\r\n    <string name=\"Emergency_Contact\">Emergency Contact</string>\r\n    <string name=\"Profile\">Profile</string>\r\n    <string name=\"Volunteer_Code\">Volunteer Code</string>\r\n    <string name=\"Email\">Email</string>\r\n    <string name=\"Password\">Password</string>\r\n    <string name=\"ConfirmPassword\">Confirm Password</string>\r\n    <string name=\"Next\">Next</string>\r\n    <string name=\"Edit\">Edit</string>\r\n    <string name=\"CreateAccount\">Create Account</string>\r\n    <string name=\"PhoneNumber\">Phone Number</string>\r\n    <string name=\"PostalCode\">Postal Code</string>\r\n    <string name=\"Register\">Register</string>\r\n    <string name=\"Wecareforyou\">We care for you</string>\r\n    <string name=\"Username\">Username</string>\r\n    <string name=\"SignIn\">Sign In</string>\r\n    <string name=\"donthaveaccount\">Don\\'t have an account?</string>\r\n    <string name=\"Confirm\">Confirm</string>\r\n    <string name=\"Call\">Call</string>\r\n    <string name=\"Back\">Back</string>\r\n    <string name=\"CurrentActiveCases\">Current Active Cases:</string>\r\n    <string name=\"CurrentStableCases\">Current Stable Cases:</string>\r\n    <string name=\"CurrentCriticalCases\">Current Critical Cases:</string>\r\n    <string name=\"TotalInfectedCases\">\"Total Infected Cases: \"</string>\r\n    <string name=\"TotalDeceasedCases\">\"Total Deceased Cases: \"</string>\r\n    <string name=\"TotalRecoveredCases\">\"Total Recovered Cases: \"</string>\r\n    <string name=\"LastUpdatedOn\">Last Updated On:</string>\r\n    <string name=\"ChangeLanguage\">Change Language</string>\r\n    <string-array name=\"languages\">\r\n        <item>Select Language:</item>\r\n        <item>en</item>\r\n        <item>zh</item>\r\n        <item>ms</item>\r\n        <item>ta</item>\r\n    </string-array>\r\n\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values/strings.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/values/strings.xml	(date 1611803883580)
+@@ -39,6 +39,15 @@
+     <string name="TotalRecoveredCases">"Total Recovered Cases: "</string>
+     <string name="LastUpdatedOn">Last Updated On:</string>
+     <string name="ChangeLanguage">Change Language</string>
++    <string name="Language">Language</string>
++    <string name="PublicEventToSearch">Public Event To Search</string>
++    <string name="Search">Search</string>
++    <string name="PrivateEvents">Private Events</string>
++    <string name="Title">Title</string>
++    <string name="Date">Date</string>
++    <string name="Time">Time</string>
++    <string name="Notes">Notes</string>
++    <string name="AddEvent">Add Event</string>
+     <string-array name="languages">
+         <item>Select Language:</item>
+         <item>en</item>
+Index: app/src/main/res/layout/activity_call_screen.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#2768A5\"\r\n    tools:context=\".ProfilePage\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"300dp\"\r\n        android:layout_height=\"match_parent\"\r\n        android:layout_alignParentStart=\"true\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:layout_alignParentEnd=\"true\"\r\n        android:layout_alignParentBottom=\"true\"\r\n        android:layout_marginStart=\"26dp\"\r\n        android:layout_marginTop=\"11dp\"\r\n        android:layout_marginEnd=\"34dp\"\r\n        android:layout_marginBottom=\"8dp\"\r\n        android:orientation=\"vertical\">\r\n\r\n\r\n        <ImageView\r\n            android:id=\"@+id/imageView\"\r\n            android:layout_width=\"218dp\"\r\n            android:layout_height=\"231dp\"\r\n            android:layout_gravity=\"center\"\r\n            app:srcCompat=\"@drawable/image\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/name\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"92dp\"\r\n            android:layout_marginBottom=\"40dp\"\r\n            android:gravity=\"center\"\r\n            android:text=\"John Doe\"\r\n            android:textColor=\"#FFD246\"\r\n            android:textSize=\"70dp\"\r\n            android:textStyle=\"bold\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/callinfo\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginBottom=\"4dp\"\r\n            android:baselineAligned=\"false\"\r\n            android:gravity=\"center\"\r\n            android:text=\"Calling...\"\r\n            android:textColor=\"#FFD246\"\r\n            android:textSize=\"30dp\"\r\n            android:textStyle=\"bold\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"horizontal\">\r\n\r\n            <ImageButton\r\n                android:id=\"@+id/speaker\"\r\n                android:layout_width=\"120dp\"\r\n                android:layout_height=\"120dp\"\r\n                android:layout_gravity=\"left\"\r\n                android:background=\"@null\"\r\n                android:scaleType=\"fitCenter\"\r\n                android:src=\"@drawable/call\" />\r\n\r\n        </LinearLayout>\r\n\r\n        <Button\r\n            android:id=\"@+id/hangup\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"69dp\"\r\n            android:text=\"End Call\"\r\n            android:textColor=\"@android:color/holo_red_dark\"\r\n            android:textSize=\"40dp\" />\r\n    </LinearLayout>\r\n\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_call_screen.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/layout/activity_call_screen.xml	(date 1612068051850)
+@@ -2,8 +2,8 @@
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:app="http://schemas.android.com/apk/res-auto"
+     xmlns:tools="http://schemas.android.com/tools"
+-    android:layout_width="match_parent"
+-    android:layout_height="match_parent"
++    android:layout_width="fill_parent"
++    android:layout_height="fill_parent"
+     android:background="#2768A5"
+     tools:context=".ProfilePage">
+ 
+@@ -32,7 +32,7 @@
+             android:id="@+id/name"
+             android:layout_width="match_parent"
+             android:layout_height="92dp"
+-            android:layout_marginBottom="40dp"
++            android:layout_marginBottom="10dp"
+             android:gravity="center"
+             android:text="John Doe"
+             android:textColor="#FFD246"
+@@ -43,37 +43,47 @@
+             android:id="@+id/callinfo"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:layout_marginBottom="4dp"
+             android:baselineAligned="false"
+             android:gravity="center"
+             android:text="Calling..."
+             android:textColor="#FFD246"
+             android:textSize="30dp"
++            android:layout_marginBottom="30dp"
+             android:textStyle="bold" />
+ 
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:orientation="horizontal">
++            android:orientation="horizontal"
++            android:gravity="center">
+ 
+             <ImageButton
+                 android:id="@+id/speaker"
+                 android:layout_width="120dp"
+                 android:layout_height="120dp"
+-                android:layout_gravity="left"
++                android:layout_gravity="center"
+                 android:background="@null"
++                android:gravity="center"
+                 android:scaleType="fitCenter"
+                 android:src="@drawable/call" />
+ 
+         </LinearLayout>
+-
+-        <Button
+-            android:id="@+id/hangup"
+-            android:layout_width="match_parent"
+-            android:layout_height="69dp"
+-            android:text="End Call"
+-            android:textColor="@android:color/holo_red_dark"
+-            android:textSize="40dp" />
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:gravity="center"
++            android:paddingTop="20dp">
++            <Button
++                android:id="@+id/hangup"
++                android:layout_width="match_parent"
++                android:layout_height="69dp"
++                android:background="@drawable/roundedbutton"
++                android:text="End Call"
++                android:textColor="#FFFFFF"
++                android:textSize="40dp" />
++        </LinearLayout>
++
+     </LinearLayout>
+ 
+ </RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/res/values-zh/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<resources>\r\n    <string name=\"app_name\">FarisCare</string>\r\n    <string name=\"Name\">全名</string>\r\n    <string name=\"Date_Of_Birth\">出生日期</string>\r\n    <string name=\"Address\">地址</string>\r\n    <string name=\"Emergency_Contact\">\"紧急联系人 \"</string>\r\n    <string name=\"Profile\">个人资料</string>\r\n    <string name=\"Volunteer_Code\">义工守则</string>\r\n    <string name=\"Email\">电子邮件</string>\r\n    <string name=\"Password\">密码</string>\r\n    <string name=\"ConfirmPassword\">确认密码</string>\r\n    <string name=\"Next\">下一个</string>\r\n    <string name=\"Edit\">后退</string>\r\n    <string name=\"CreateAccount\">创建帐号</string>\r\n    <string name=\"PhoneNumber\">电话号码</string>\r\n    <string name=\"PostalCode\">邮政编码</string>\r\n    <string name=\"Register\">注册</string>\r\n    <string name=\"Wecareforyou\">我们在乎你</string>\r\n    <string name=\"Username\">用户名</string>\r\n    <string name=\"SignIn\">登入</string>\r\n    <string name=\"donthaveaccount\">没有帐号?</string>\r\n    <string name=\"Confirm\">确认</string>\r\n    <string name=\"Call\">打电话</string>\r\n    <string name=\"Back\">后退</string>\r\n    <string name=\"next\">下一个</string>\r\n    <string name=\"previous\">后退</string>\r\n    <string-array name=\"languages\">\r\n        <item>Select Language:</item>\r\n        <item>en</item>\r\n        <item>zh</item>\r\n        <item>ms</item>\r\n        <item>ta</item>\r\n    </string-array>\r\n    <string name=\"CurrentActiveCases\">当前活跃案例:</string>\r\n    <string name=\"CurrentStableCases\">当前稳定的病例:</string>\r\n    <string name=\"CurrentCriticalCases\">当前的紧急病例:</string>\r\n    <string name=\"TotalInfectedCases\">重大活跃病例:</string>\r\n    <string name=\"TotalDeceasedCases\">重大稳定的病例:</string>\r\n    <string name=\"TotalRecoveredCases\">重大的紧急病例:</string>\r\n    <string name=\"LastUpdatedOn\">上次更新时间:</string>\r\n    <string name=\"ChangeLanguage\">\"改变语言 \"</string>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-zh/strings.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/values-zh/strings.xml	(date 1611804204207)
+@@ -40,4 +40,13 @@
+     <string name="TotalRecoveredCases">重大的紧急病例:</string>
+     <string name="LastUpdatedOn">上次更新时间:</string>
+     <string name="ChangeLanguage">"改变语言 "</string>
++    <string name="Language">Language</string>
++    <string name="PublicEventToSearch">Public Event To Search</string>
++    <string name="Search">Search</string>
++    <string name="PrivateEvents">Private Events</string>
++    <string name="Title">Title</string>
++    <string name="Date">Date</string>
++    <string name="Time" translatable="false">Time</string>
++    <string name="Notes">Notes</string>
++    <string name="AddEvent">Add Event</string>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/java/com/example/fariscare/MainMenu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fariscare;\r\n\r\nimport android.Manifest;\r\nimport android.content.DialogInterface;\r\nimport android.content.Intent;\r\nimport android.content.pm.PackageManager;\r\nimport android.net.Uri;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.ImageView;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AlertDialog;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.core.app.ActivityCompat;\r\nimport androidx.core.content.ContextCompat;\r\n\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.auth.FirebaseUser;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\nimport com.sinch.android.rtc.ClientRegistration;\r\nimport com.sinch.android.rtc.PushPair;\r\nimport com.sinch.android.rtc.Sinch;\r\nimport com.sinch.android.rtc.SinchClient;\r\nimport com.sinch.android.rtc.SinchError;\r\nimport com.sinch.android.rtc.calling.Call;\r\nimport com.sinch.android.rtc.calling.CallClient;\r\nimport com.sinch.android.rtc.calling.CallClientListener;\r\nimport com.sinch.android.rtc.calling.CallListener;\r\n\r\nimport java.util.List;\r\n\r\nimport static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;\r\n\r\npublic class MainMenu extends AppCompatActivity {\r\n    Button emergencyButton;\r\n    Button socialButton;\r\n    Button apiButton;\r\n    Button eventButton;\r\n    String eContact,uid;\r\n    TextView address,name,dob;\r\n    DatabaseReference databaseReference;\r\n    ImageView ic,call;\r\n    SinchClient sinchClient;\r\n    Call calls;\r\n    DatabaseReference reference;\r\n    FirebaseAuth auth;\r\n    FirebaseUser firebaseUser;\r\n\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        setContentView(R.layout.activity_main_menu);\r\n        ActivityCompat.requestPermissions(MainMenu.this, new String[]{Manifest.permission.CALL_PHONE}, 1);\r\n        apiButton=(Button)findViewById(R.id.groceries);\r\n        socialButton=(Button)findViewById(R.id.social);\r\n        eventButton = (Button) findViewById(R.id.event);\r\n        eContact = getIntent().getStringExtra(\"emergency\");\r\n        ic=findViewById(R.id.imageView9);\r\n        name=findViewById(R.id.NameHome);\r\n        dob=findViewById(R.id.DOBHome);\r\n        address=findViewById(R.id.AddressHome);\r\n        call=findViewById(R.id.imageView4);\r\n        Bundle bundle = getIntent().getExtras();\r\n        uid=bundle.getString(\"User_UID\");\r\n        Log.v(\"Menu\",\"Emergency contact: \"+eContact);\r\n        databaseReference= FirebaseDatabase.getInstance().getReference().child(\"Member\").child(uid);\r\n        databaseReference.addValueEventListener(new ValueEventListener() {\r\n            @Override\r\n            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {\r\n                String n = dataSnapshot.child(\"name\").getValue().toString();\r\n                String birth = dataSnapshot.child(\"dob\").getValue().toString();\r\n                String address1 = dataSnapshot.child(\"address\").getValue().toString();\r\n                name.setText(n);\r\n                address.setText(address1);\r\n                dob.setText(birth);\r\n            }\r\n            @Override\r\n            public void onCancelled(@NonNull DatabaseError databaseError) {\r\n\r\n            }\r\n        });\r\n        reference=FirebaseDatabase.getInstance().getReference().child(\"Member\");\r\n        auth=FirebaseAuth.getInstance();\r\n        firebaseUser=auth.getCurrentUser();\r\n\r\n        Log.v(\"sinchuid\",firebaseUser.getUid());\r\n\r\n        sinchClient= Sinch.getSinchClientBuilder().context(this)\r\n                .userId(firebaseUser.getUid())\r\n                .applicationKey(\"63cc94ee-d4f8-4805-8938-6067e98fc8fa\")\r\n                .applicationSecret(\"t1FsM6t2k0+Pq8hKPzW3sQ==\").environmentHost(\"clientapi.sinch.com\").build();\r\n\r\n        sinchClient.setSupportCalling(true);\r\n        sinchClient.startListeningOnActiveConnection();\r\n        sinchClient.setSupportActiveConnectionInBackground(true);\r\n\r\n\r\n        sinchClient.getCallClient().addCallClientListener(new MainMenu.SinchCallClientListener(){\r\n            public void onClientStarted(SinchClient client) { }\r\n\r\n            public void onClientStopped(SinchClient client) { }\r\n\r\n            public void onClientFailed(SinchClient client, SinchError error) { }\r\n\r\n            public void onRegistrationCredentialsRequired(SinchClient client, ClientRegistration registrationCallback) { }\r\n\r\n            public void onLogMessage(int level, String area, String message) { }\r\n\r\n        });\r\n        sinchClient.start();\r\n        call.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                requestAudioPermissions();\r\n                Intent social = new Intent(MainMenu.this, OCall.class);\r\n                startActivity(social);\r\n            }\r\n            });\r\n\r\n        apiButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent covidApi = new Intent(MainMenu.this, ApiPage.class);\r\n                startActivity(covidApi);\r\n            }\r\n        });\r\n\r\n        socialButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                requestAudioPermissions();\r\n                Intent social=new Intent(MainMenu.this,OCall.class);\r\n                social.putExtra(\"uid\", uid);\r\n                startActivity(social);\r\n\r\n            }\r\n        });\r\n\r\n        eventButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                requestAudioPermissions();\r\n                Intent event=new Intent(MainMenu.this,AddEvent.class);\r\n                startActivity(event);\r\n\r\n            }\r\n        });\r\n        ic.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent profile=new Intent(MainMenu.this,ProfilePage.class);\r\n                profile.putExtra(\"uid\", uid);\r\n                startActivity(profile);\r\n            }\r\n        });\r\n\r\n        emergencyButton = (Button) findViewById(R.id.emergency);\r\n        emergencyButton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                if (eContact==NULL){\r\n                    Toast.makeText(getApplicationContext(),\"No emergency contact\",Toast.LENGTH_SHORT).show();\r\n                }\r\n                else{\r\n                    Intent call = new Intent(Intent.ACTION_CALL, Uri.parse(\"tel:\" + eContact));\r\n                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {\r\n                        // TODO: Consider calling\r\n                        //    ActivityCompat#requestPermissions\r\n                        // here to request the missing permissions, and then overriding\r\n                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,\r\n                        //                                          int[] grantResults)\r\n                        // to handle the case where the user grants the permission. See the documentation\r\n                        // for ActivityCompat#requestPermissions for more details.\r\n                        return;\r\n                    }\r\n                    startActivity(call);\r\n                }\r\n\r\n\r\n            }\r\n        });\r\n\r\n    }\r\n\r\n    private final int MY_PERMISSIONS_RECORD_AUDIO = 1;\r\n\r\n    private void requestAudioPermissions() {\r\n        if (ContextCompat.checkSelfPermission(this,\r\n                Manifest.permission.RECORD_AUDIO)\r\n                != PackageManager.PERMISSION_GRANTED) {\r\n\r\n            //When permission is not granted by user, show them message why this permission is needed.\r\n            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.RECORD_AUDIO)) {\r\n                Toast.makeText(this, \"Please grant permissions to record audio\", Toast.LENGTH_LONG).show();\r\n\r\n                //Give user option to still opt-in the permissions\r\n                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},MY_PERMISSIONS_RECORD_AUDIO);\r\n\r\n            } else {\r\n                // Show user dialog to grant permission to record audio\r\n                ActivityCompat.requestPermissions(this,\r\n                        new String[]{Manifest.permission.RECORD_AUDIO},\r\n                        MY_PERMISSIONS_RECORD_AUDIO);\r\n            }\r\n        }\r\n        //If permission is granted, then go ahead recording audio\r\n        else if (ContextCompat.checkSelfPermission(this,\r\n                Manifest.permission.RECORD_AUDIO)\r\n                == PackageManager.PERMISSION_GRANTED) {\r\n        }\r\n    }\r\n\r\n    //Handling callback\r\n    @Override\r\n    public void onRequestPermissionsResult(int requestCode,\r\n                                           String permissions[], int[] grantResults) {\r\n        switch (requestCode) {\r\n            case MY_PERMISSIONS_RECORD_AUDIO: {\r\n                if (grantResults.length > 0\r\n                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {\r\n                    // permission was granted, yay!\r\n                } else {\r\n                    // permission denied, boo! Disable the\r\n                    // functionality that depends on this permission.\r\n                    Toast.makeText(this, \"Permissions Denied to record audio\", Toast.LENGTH_LONG).show();\r\n                }\r\n                return;\r\n            }\r\n        }\r\n    }\r\n\r\n\r\n    private class SinchCallListener implements CallListener {\r\n\r\n        @Override\r\n        public void onCallProgressing(Call calls) {\r\n            Toast.makeText(getApplicationContext(),\"Ring ring\",Toast.LENGTH_LONG).show();\r\n        }\r\n\r\n        @Override\r\n        public void onCallEstablished(Call calls) {\r\n            Toast.makeText(getApplicationContext(),\"Call connected\",Toast.LENGTH_SHORT).show();\r\n        }\r\n\r\n        @Override\r\n        public void onCallEnded(Call endedcall) {\r\n            Toast.makeText(getApplicationContext(),\"Call ended\",Toast.LENGTH_SHORT).show();\r\n            calls=null;\r\n            endedcall.hangup();\r\n        }\r\n\r\n        @Override\r\n        public void onShouldSendPushNotification(Call calls, List<PushPair> list) {\r\n\r\n        }\r\n    }\r\n\r\n\r\n\r\n\r\n    private class SinchCallClientListener implements CallClientListener {\r\n\r\n        @Override\r\n        public void onIncomingCall(CallClient callClient, final Call incomingcall) {\r\n\r\n            AlertDialog alertDialog =new AlertDialog.Builder(MainMenu.this).create();\r\n            alertDialog.setTitle(\"Calling...\");\r\n            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, \"Reject\", new DialogInterface.OnClickListener() {\r\n                @Override\r\n                public void onClick(DialogInterface dialog, int which) {\r\n                    calls=incomingcall;\r\n                    dialog.dismiss();\r\n                    calls.hangup();\r\n                }\r\n            });\r\n            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, \"Pick up\", new DialogInterface.OnClickListener() {\r\n                @Override\r\n                public void onClick(DialogInterface dialog, int which) {\r\n                    calls=incomingcall;\r\n                    calls.answer();\r\n                    calls.addCallListener(new MainMenu.SinchCallListener());\r\n                    Toast.makeText(getApplicationContext(),\"Call is answered\",Toast.LENGTH_LONG).show();\r\n                }\r\n            });\r\n\r\n            alertDialog.show();\r\n        }\r\n    }\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/fariscare/MainMenu.java	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/java/com/example/fariscare/MainMenu.java	(date 1611802995049)
+@@ -9,6 +9,7 @@
+ import android.util.Log;
+ import android.view.View;
+ import android.widget.Button;
++import android.widget.ImageButton;
+ import android.widget.ImageView;
+ import android.widget.TextView;
+ import android.widget.Toast;
+@@ -45,6 +46,7 @@
+     Button socialButton;
+     Button apiButton;
+     Button eventButton;
++    ImageButton langButton;
+     String eContact,uid;
+     TextView address,name,dob;
+     DatabaseReference databaseReference;
+@@ -70,6 +72,7 @@
+         dob=findViewById(R.id.DOBHome);
+         address=findViewById(R.id.AddressHome);
+         call=findViewById(R.id.imageView4);
++        langButton = (ImageButton)findViewById(R.id.langbutton);
+         Bundle bundle = getIntent().getExtras();
+         uid=bundle.getString("User_UID");
+         Log.v("Menu","Emergency contact: "+eContact);
+@@ -134,6 +137,13 @@
+                 startActivity(covidApi);
+             }
+         });
++        langButton.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View v) {
++                Intent intent = new Intent(MainMenu.this, LanguageSettings.class);
++                startActivity(intent);
++            }
++        });
+ 
+         socialButton.setOnClickListener(new View.OnClickListener() {
+             @Override
+Index: app/src/main/res/values-ta/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<resources>\r\n    <string name=\"app_name\">FarisCare</string>\r\n    <string name=\"Name\">பெயர்</string>\r\n    <string name=\"Date_Of_Birth\">பிறந்த தேதி</string>\r\n    <string name=\"Address\">முகவரி</string>\r\n    <string name=\"Emergency_Contact\">அவசர தொடர்பு</string>\r\n    <string name=\"Profile\">சுயவிவரம்</string>\r\n    <string name=\"Volunteer_Code\">தன்னார்வ குறியீடு</string>\r\n    <string name=\"Email\">மின்னஞ்சல்</string>\r\n    <string name=\"Password\">கடவுச்சொல்</string>\r\n    <string name=\"ConfirmPassword\">\"கடவுச்சொல்லை உறுதிப்படுத்தவும் \"</string>\r\n    <string name=\"Next\">அடுத்தது</string>\r\n    <string name=\"Edit\">தொகு</string>\r\n    <string name=\"CreateAccount\">\"உங்கள் கணக்கை துவங்குங்கள் \"</string>\r\n    <string name=\"PhoneNumber\">\"தொலைபேசி எண் \"</string>\r\n    <string name=\"PostalCode\">அஞ்சல் குறியீடு</string>\r\n    <string name=\"Register\">பதிவு</string>\r\n    <string name=\"Wecareforyou\">\"நாங்கள் உங்களை கவனித்துக்கொள்கிறோம் \"</string>\r\n    <string name=\"Username\">பயனர்பெயர்</string>\r\n    <string name=\"SignIn\">உள்நுழைக</string>\r\n    <string name=\"donthaveaccount\">கணக்கு இல்லையா?</string>\r\n    <string name=\"Confirm\">உறுதி செய்</string>\r\n    <string name=\"Call\">அழைப்பு</string>\r\n    <string name=\"Back\">Back</string>\r\n    <string name=\"next\">அடுத்தது</string>\r\n    <string name=\"previous\">முந்தையது</string>\r\n    <string-array name=\"languages\">\r\n        <item>Select Language:</item>\r\n        <item>en</item>\r\n        <item>zh</item>\r\n        <item>ms</item>\r\n        <item>ta</item>\r\n    </string-array>\r\n    <string name=\"CurrentActiveCases\">தற்போதைய செயலில் உள்ள வழக்குகள்:</string>\r\n    <string name=\"CurrentCriticalCases\">\"தற்போதைய சிக்கலான வழக்குகள் \"</string>\r\n    <string name=\"TotalInfectedCases\">மொத்த செயலில் உள்ள வழக்குகள்:</string>\r\n    <string name=\"TotalDeceasedCases\">மொத்த இறந்த வழக்குகள்:</string>\r\n    <string name=\"TotalRecoveredCases\">மொத்த மீட்கப்பட்ட வழக்குகள்:</string>\r\n    <string name=\"LastUpdatedOn\">கடைசியாக புதுப்பிக்கப்பட்டது:</string>\r\n    <string name=\"ChangeLanguage\">மொழியை மாற்றுங்கள்</string>\r\n    <string name=\"CurrentStableCases\">தற்போதைய இறந்த வழக்குகள்:</string>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-ta/strings.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/values-ta/strings.xml	(date 1611804204221)
+@@ -40,4 +40,13 @@
+     <string name="LastUpdatedOn">கடைசியாக புதுப்பிக்கப்பட்டது:</string>
+     <string name="ChangeLanguage">மொழியை மாற்றுங்கள்</string>
+     <string name="CurrentStableCases">தற்போதைய இறந்த வழக்குகள்:</string>
++    <string name="Language">Language</string>
++    <string name="PublicEventToSearch">Public Event To Search</string>
++    <string name="Search">Search</string>
++    <string name="PrivateEvents">Private Events</string>
++    <string name="Title">Title</string>
++    <string name="Date">Date</string>
++    <string name="Time" translatable="false">Time</string>
++    <string name="Notes">Notes</string>
++    <string name="AddEvent">Add Event</string>
+ </resources>
+\ No newline at end of file
+Index: app/src/main/java/com/example/fariscare/LanguageSettings.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/fariscare/LanguageSettings.java	(date 1611774467414)
++++ app/src/main/java/com/example/fariscare/LanguageSettings.java	(date 1611774467414)
+@@ -0,0 +1,65 @@
++package com.example.fariscare;
++
++import android.content.SharedPreferences;
++import android.content.res.Configuration;
++import android.content.res.Resources;
++import android.os.Bundle;
++import android.util.DisplayMetrics;
++import android.view.View;
++import android.widget.ArrayAdapter;
++import android.widget.Button;
++import android.widget.Spinner;
++import android.widget.Toast;
++
++import androidx.appcompat.app.AppCompatActivity;
++
++import java.util.Locale;
++
++public class LanguageSettings extends AppCompatActivity {
++    Button lang;
++    @Override
++    protected void onCreate(Bundle savedInstanceState) {
++        super.onCreate(savedInstanceState);
++        setContentView(R.layout.activity_lang_settings);
++        Spinner spinner = findViewById(R.id.spinner);
++        lang = (Button)findViewById(R.id.langbutton);
++        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.languages, android.R.layout.simple_spinner_item);
++        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
++        spinner.setAdapter(adapter);
++        lang.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                String lang = spinner.getSelectedItem().toString();
++                Toast.makeText(LanguageSettings.this,lang,Toast.LENGTH_SHORT).show();
++                setLocale(lang);
++                setAppLocale(lang);
++                recreate();
++            }
++        });
++
++    }
++    private void setAppLocale(String localeCode){
++        Resources resources = getResources();
++        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
++        Configuration configuration = resources.getConfiguration();
++        configuration.setLocale(new Locale(localeCode.toLowerCase()));
++        resources.updateConfiguration(configuration, displayMetrics);
++        configuration.locale = new Locale(localeCode.toLowerCase());
++        resources.updateConfiguration(configuration, displayMetrics);
++    }
++    private void setLocale(String lang) {
++        Locale locale = new Locale(lang);
++        Locale.setDefault(locale);
++        Configuration config = new Configuration();
++        config.locale = locale;
++        getBaseContext().getResources().updateConfiguration(config,getBaseContext().getResources().getDisplayMetrics());
++        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
++        editor.putString("Lang", lang);
++        editor.apply();
++    }
++    private void loadLocale(){
++        SharedPreferences prefs = getSharedPreferences("Settings",MODE_PRIVATE);
++        String lang = prefs.getString("Lang","");
++        setLocale(lang);
++    }
++}
+Index: app/src/main/res/layout/activity_lang_settings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_lang_settings.xml	(date 1611805202439)
++++ app/src/main/res/layout/activity_lang_settings.xml	(date 1611805202439)
+@@ -0,0 +1,105 @@
++<?xml version="1.0" encoding="utf-8"?>
++<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="match_parent"
++    android:background="#2768A5"
++    tools:context=".RegisterPage"> <!--CONTEXT HAS TO BE CHANGED-->
++    <LinearLayout
++        android:layout_width="300dp"
++        android:layout_height="wrap_content"
++        android:layout_alignParentStart="true"
++        android:layout_alignParentTop="true"
++        android:layout_alignParentEnd="true"
++        android:layout_alignParentBottom="true"
++        android:layout_marginStart="30dp"
++        android:layout_marginTop="20dp"
++        android:layout_marginEnd="28dp"
++        android:layout_marginBottom="50dp"
++        android:orientation="vertical">
++        <FrameLayout
++            android:layout_height="wrap_content"
++            android:layout_width="match_parent">
++
++
++
++            <ImageView
++                android:id="@+id/imageView5"
++                android:layout_width="45dp"
++                android:layout_height="45dp"
++                android:layout_marginLeft="10dp"
++                android:layout_marginVertical="5dp"
++                app:srcCompat="@drawable/ic_baseline_keyboard_backspace_24" />
++
++            <TextView
++                android:layout_width="wrap_content"
++                android:layout_height="wrap_content"
++                android:layout_gravity="center"
++                android:layout_marginBottom="0dp"
++                android:text="@string/Language"
++                android:textColor="#FFF"
++                android:textSize="30dp"
++                android:textStyle="bold" /> <!--TEXT-->
++
++        </FrameLayout> <!--FrameLayout used to place text in front of top bar-->
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:paddingTop="200dp"
++            android:orientation="vertical">
++            <Spinner
++                android:id="@+id/spinner"
++                android:layout_width="match_parent"
++                android:paddingTop="300px"
++                android:layout_height="49dp"
++                android:background="@drawable/spinner" />
++
++            <Button
++                android:id="@+id/langbutton"
++                android:layout_width="match_parent"
++                android:layout_height="wrap_content"
++                android:text="@string/ChangeLanguage" />
++
++        </LinearLayout>
++
++
++
++        <!--SYMBOLS OF NAVBAR BELOW-->
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:paddingTop="600px"
++            android:orientation="horizontal"
++            android:weightSum="2">
++
++            <ImageView
++                android:id="@+id/imageView2"
++                android:layout_width="45dp"
++                android:layout_height="45dp"
++                android:layout_marginVertical="7.5dp"
++                android:layout_marginLeft="50dp"
++                app:srcCompat="@drawable/ic_baseline_home_24" />
++
++            <ImageView
++                android:id="@+id/imageView3"
++                android:layout_width="45dp"
++                android:layout_height="45dp"
++                android:layout_marginVertical="7.5dp"
++                android:layout_marginLeft="58dp"
++                app:srcCompat="@drawable/ic_baseline_shopping_basket_24" />
++
++            <ImageView
++                android:id="@+id/imageView4"
++                android:layout_width="45dp"
++                android:layout_height="45dp"
++                android:layout_marginVertical="7.5dp"
++                android:layout_marginLeft="60dp"
++                app:srcCompat="@drawable/ic_baseline_phone_24" />
++
++
++        </LinearLayout>
++
++    </LinearLayout>
++
++</RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/res/drawable-v24/spinner.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable-v24/spinner.xml	(date 1611770159165)
++++ app/src/main/res/drawable-v24/spinner.xml	(date 1611770159165)
+@@ -0,0 +1,4 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
++    <solid android:color="#FFFFFF"/>
++</shape>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_search.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<androidx.constraintlayout.widget.ConstraintLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    tools:context=\".Search\">\r\n\r\n    <EditText\r\n        android:id=\"@+id/search\"\r\n        android:layout_width=\"229dp\"\r\n        android:layout_height=\"50dp\"\r\n        android:layout_marginTop=\"316dp\"\r\n        android:hint=\"Public Event To Search\"\r\n        android:textAlignment=\"center\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintHorizontal_bias=\"0.497\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toTopOf=\"parent\" />\r\n\r\n    <Button\r\n        android:id=\"@+id/searchbutton\"\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_marginTop=\"40dp\"\r\n        android:text=\"Search\"\r\n        app:layout_constraintBottom_toBottomOf=\"parent\"\r\n        app:layout_constraintEnd_toEndOf=\"parent\"\r\n        app:layout_constraintHorizontal_bias=\"0.498\"\r\n        app:layout_constraintStart_toStartOf=\"parent\"\r\n        app:layout_constraintTop_toBottomOf=\"@+id/search\"\r\n        app:layout_constraintVertical_bias=\"0.0\" />\r\n\r\n</androidx.constraintlayout.widget.ConstraintLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_search.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/layout/activity_search.xml	(date 1611803883634)
+@@ -11,7 +11,7 @@
+         android:layout_width="229dp"
+         android:layout_height="50dp"
+         android:layout_marginTop="316dp"
+-        android:hint="Public Event To Search"
++        android:hint="@string/PublicEventToSearch"
+         android:textAlignment="center"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.497"
+@@ -23,7 +23,7 @@
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="40dp"
+-        android:text="Search"
++        android:text="@string/Search"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintEnd_toEndOf="parent"
+         app:layout_constraintHorizontal_bias="0.498"
+Index: app/src/main/res/layout/activity_add_event.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#2768A5\"\r\n    tools:context=\".AddEvent\">\r\n    <LinearLayout\r\n        android:layout_width=\"300dp\"\r\n        android:layout_height=\"wrap_content\"\r\n        android:layout_alignParentStart=\"true\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:layout_alignParentEnd=\"true\"\r\n        android:layout_alignParentBottom=\"true\"\r\n        android:layout_marginStart=\"30dp\"\r\n        android:layout_marginTop=\"20dp\"\r\n        android:layout_marginEnd=\"30dp\"\r\n        android:layout_marginBottom=\"20dp\"\r\n        android:orientation=\"vertical\">\r\n\r\n        <TextView\r\n            android:id=\"@+id/Private\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginBottom=\"10dp\"\r\n            android:text=\"Private Events\"\r\n            android:textColor=\"#FFD246\"\r\n            android:textSize=\"40dp\"\r\n            android:layout_marginLeft=\"50dp\"\r\n            android:textStyle=\"bold\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/title\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"0dp\"\r\n            android:layout_marginTop=\"10dp\"\r\n            android:drawablePadding=\"12dp\"\r\n            android:background=\"#2768A5\"\r\n            android:textColor=\"#FFFFFF\"\r\n            android:padding=\"9dp\"\r\n            android:text=\"Title\"\r\n            android:textSize=\"25dp\"\r\n            android:textStyle=\"bold\"/>\r\n        <EditText\r\n            android:id=\"@+id/title1\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"0dp\"\r\n            android:drawablePadding=\"12dp\"\r\n            android:background=\"@drawable/rounded\"\r\n            android:padding=\"9dp\"\r\n            android:textColor=\"#FFFFFF\"\r\n            android:textSize=\"20dp\"\r\n            android:backgroundTint=\"#2768A5\"\r\n            />\r\n        <TextView\r\n            android:id=\"@+id/Date\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"0dp\"\r\n            android:layout_marginTop=\"10dp\"\r\n            android:drawablePadding=\"12dp\"\r\n            android:background=\"#2768A5\"\r\n            android:textColor=\"#FFFFFF\"\r\n            android:padding=\"9dp\"\r\n            android:text=\"Date\"\r\n            android:textSize=\"25dp\"\r\n            android:textStyle=\"bold\"/>\r\n        <EditText\r\n            android:id=\"@+id/date\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"0dp\"\r\n            android:drawablePadding=\"12dp\"\r\n            android:background=\"@drawable/rounded\"\r\n            android:padding=\"9dp\"\r\n            android:textColor=\"#FFFFFF\"\r\n            android:textSize=\"20dp\"\r\n            android:backgroundTint=\"#2768A5\"\r\n            />\r\n        <TextView\r\n            android:id=\"@+id/Time\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"0dp\"\r\n            android:layout_marginTop=\"10dp\"\r\n            android:drawablePadding=\"12dp\"\r\n            android:backgroundTint=\"#2768A5\"\r\n            android:textColor=\"#FFFFFF\"\r\n            android:padding=\"9dp\"\r\n            android:text=\"Time\"\r\n            android:textSize=\"25dp\"\r\n            android:textStyle=\"bold\"/>\r\n        <EditText\r\n            android:id=\"@+id/time\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"0dp\"\r\n            android:drawablePadding=\"12dp\"\r\n            android:background=\"@drawable/rounded\"\r\n            android:backgroundTint=\"#2768A5\"\r\n            android:textColor=\"#FFFFFF\"\r\n            android:padding=\"9dp\"\r\n            android:textSize=\"20dp\" />/>\r\n\r\n        <TextView\r\n            android:id=\"@+id/Notes\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"0dp\"\r\n            android:layout_marginTop=\"10dp\"\r\n            android:drawablePadding=\"12dp\"\r\n            android:backgroundTint=\"#2768A5\"\r\n            android:textColor=\"#FFFFFF\"\r\n            android:padding=\"9dp\"\r\n            android:text=\"Notes\"\r\n            android:textSize=\"25dp\"\r\n            android:textStyle=\"bold\"/>\r\n\r\n        <EditText\r\n            android:id=\"@+id/notes\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"166dp\"\r\n            android:layout_marginLeft=\"0dp\"\r\n            android:background=\"@drawable/rounded\"\r\n            android:backgroundTint=\"#2768A5\"\r\n            android:drawablePadding=\"12dp\"\r\n            android:padding=\"9dp\"\r\n            android:textColor=\"#FFFFFF\"\r\n            android:textSize=\"20dp\"\r\n            />\r\n\r\n        <Button\r\n            android:id=\"@+id/add1\"\r\n            android:layout_width=\"191dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"Add Event\"\r\n            android:layout_marginLeft=\"80dp\"\r\n            />\r\n\r\n\r\n    </LinearLayout>\r\n\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_add_event.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/layout/activity_add_event.xml	(date 1611803883616)
+@@ -24,7 +24,7 @@
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginBottom="10dp"
+-            android:text="Private Events"
++            android:text="@string/PrivateEvents"
+             android:textColor="#FFD246"
+             android:textSize="40dp"
+             android:layout_marginLeft="50dp"
+@@ -40,7 +40,7 @@
+             android:background="#2768A5"
+             android:textColor="#FFFFFF"
+             android:padding="9dp"
+-            android:text="Title"
++            android:text="@string/Title"
+             android:textSize="25dp"
+             android:textStyle="bold"/>
+         <EditText
+@@ -65,7 +65,7 @@
+             android:background="#2768A5"
+             android:textColor="#FFFFFF"
+             android:padding="9dp"
+-            android:text="Date"
++            android:text="@string/Date"
+             android:textSize="25dp"
+             android:textStyle="bold"/>
+         <EditText
+@@ -90,7 +90,7 @@
+             android:backgroundTint="#2768A5"
+             android:textColor="#FFFFFF"
+             android:padding="9dp"
+-            android:text="Time"
++            android:text="@string/Time"
+             android:textSize="25dp"
+             android:textStyle="bold"/>
+         <EditText
+@@ -115,7 +115,7 @@
+             android:backgroundTint="#2768A5"
+             android:textColor="#FFFFFF"
+             android:padding="9dp"
+-            android:text="Notes"
++            android:text="@string/Notes"
+             android:textSize="25dp"
+             android:textStyle="bold"/>
+ 
+@@ -136,7 +136,7 @@
+             android:id="@+id/add1"
+             android:layout_width="191dp"
+             android:layout_height="wrap_content"
+-            android:text="Add Event"
++            android:text="@string/AddEvent"
+             android:layout_marginLeft="80dp"
+             />
+ 
+Index: app/src/main/res/drawable/roundedbutton.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/roundedbutton.xml	(date 1611769183435)
++++ app/src/main/res/drawable/roundedbutton.xml	(date 1611769183435)
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
++    <solid android:color="#d40003"/>
++    <corners android:radius="20dp"/>
++</shape>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_main.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:id=\"@+id/LoginPage\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:layout_gravity=\"center\"\r\n    android:gravity=\"center\"\r\n    android:background=\"#2768A5\"\r\n    tools:context=\".MainActivity\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"wrap_content\"\r\n        android:layout_height=\"470dp\"\r\n        android:layout_alignParentStart=\"false\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:layout_alignParentEnd=\"true\"\r\n        android:layout_alignParentBottom=\"true\"\r\n        android:layout_marginStart=\"30dp\"\r\n        android:layout_marginTop=\"10dp\"\r\n        android:layout_marginEnd=\"28dp\"\r\n        android:layout_marginBottom=\"10dp\"\r\n        android:orientation=\"vertical\"\r\n        >\r\n\r\n        <ImageView\r\n            android:id=\"@+id/imageView3\"\r\n            android:layout_width=\"324dp\"\r\n            android:layout_height=\"180dp\"\r\n            app:srcCompat=\"@drawable/untitled_2\"\r\n            android:layout_gravity=\"center\"/>\r\n\r\n        <TextView\r\n            android:layout_width=\"362dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_gravity=\"center\"\r\n            android:layout_marginBottom=\"20dp\"\r\n\r\n            android:text=\"@string/Wecareforyou\"\r\n            android:textColor=\"#FFD246\"\r\n            android:textSize=\"35dp\"\r\n            android:textStyle=\"bold\"\r\n            android:textAlignment=\"center\"/>\r\n\r\n        <EditText\r\n            android:id=\"@+id/EnterEmail\"\r\n            android:layout_width=\"230dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"60dp\"\r\n            android:layout_marginTop=\"5dp\"\r\n            android:background=\"#ffff\"\r\n            android:drawableStart=\"@drawable/ic_person\"\r\n            android:drawablePadding=\"37dp\"\r\n            android:hint=\"@string/Username\"\r\n            android:inputType=\"textEmailAddress\"\r\n            android:padding=\"9dp\"\r\n            android:textSize=\"20dp\"\r\n\r\n            />\r\n\r\n        <EditText\r\n            android:id=\"@+id/EnterPassword\"\r\n            android:layout_width=\"230dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginLeft=\"60dp\"\r\n            android:layout_marginTop=\"20dp\"\r\n            android:drawableStart=\"@drawable/ic_lock\"\r\n            android:drawablePadding=\"37dp\"\r\n            android:background=\"#ffff\"\r\n            android:hint=\"@string/Password\"\r\n            android:inputType=\"textPassword\"\r\n            android:padding=\"9dp\"\r\n            android:textSize=\"20dp\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"horizontal\">\r\n\r\n        </LinearLayout>\r\n\r\n        <Button\r\n            android:id=\"@+id/LoginButton\"\r\n            android:layout_width=\"200dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_gravity=\"center\"\r\n            android:layout_marginTop=\"40dp\"\r\n            android:background=\"@drawable/rounded\"\r\n            android:text=\"@string/SignIn\"\r\n            android:textAllCaps=\"false\"\r\n            android:textColor=\"#FFF\"\r\n            android:textSize=\"23dp\"\r\n\r\n\r\n            />\r\n\r\n        <TextView\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"@string/donthaveaccount\"\r\n            android:textSize=\"16dp\"\r\n            android:gravity=\"center\"\r\n            android:textStyle=\"bold\"\r\n            android:layout_marginTop=\"20dp\"/>\r\n\r\n        <TextView\r\n            android:id=\"@+id/Register\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"@string/Register\"\r\n            android:gravity=\"center\"\r\n            android:textColor=\"#FFFF\"\r\n            android:textSize=\"16dp\"\r\n            android:textStyle=\"bold\" />\r\n\r\n\r\n\r\n        <Spinner\r\n            android:id=\"@+id/spinner\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\" />\r\n        <Button\r\n            android:id=\"@+id/langbutton\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"@string/ChangeLanguage\" />\r\n\r\n\r\n    </LinearLayout>\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/layout/activity_main.xml	(date 1611770159204)
+@@ -114,18 +114,27 @@
+             android:textSize="16dp"
+             android:textStyle="bold" />
+ 
+-
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:paddingTop="20dp">
+ 
+-        <Spinner
+-            android:id="@+id/spinner"
+-            android:layout_width="match_parent"
+-            android:layout_height="wrap_content" />
++            <Spinner
++                android:id="@+id/spinner"
++                android:layout_width="match_parent"
++                android:layout_height="49dp"
++                android:background="@drawable/spinner" />
++
++
++
++        </LinearLayout>
++
+         <Button
+             android:id="@+id/langbutton"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:text="@string/ChangeLanguage" />
+-
+-
++            android:text="Button" />
+     </LinearLayout>
+ </RelativeLayout>
+\ No newline at end of file
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    package=\"com.example.fariscare\">\r\n\r\n    <uses-permission android:name=\"android.permission.CALL_PHONE\" />\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\" />\r\n    <uses-permission android:name=\"android.permission.RECORD_AUDIO\" />\r\n    <uses-permission android:name=\"android.permission.MODIFY_AUDIO_SETTINGS\" />\r\n    <uses-permission android:name=\"android.permission.READ_PHONE_STATE\" />\r\n\r\n    <application\r\n        android:allowBackup=\"true\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/AppTheme\">\r\n        <activity android:name=\".AddEvent\"></activity>\r\n        <activity android:name=\".ApiPage\" />\r\n        <activity android:name=\".EditProfilePage\" />\r\n        <activity android:name=\".ProfilePage\" />\r\n        <activity android:name=\".RegisterPt2\" />\r\n        <activity android:name=\".OCall\" />\r\n        <activity android:name=\".RegisterPage\" />\r\n        <activity android:name=\".MainMenu\" />\r\n        <activity android:name=\".Search\" />\r\n        <activity android:name=\".SearchResult\" />\r\n        <activity android:name=\".MainActivity\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\" />\r\n            </intent-filter>\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/AndroidManifest.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/AndroidManifest.xml	(date 1611803202068)
+@@ -16,8 +16,9 @@
+         android:roundIcon="@mipmap/ic_launcher_round"
+         android:supportsRtl="true"
+         android:theme="@style/AppTheme">
+-        <activity android:name=".AddEvent"></activity>
++        <activity android:name=".AddEvent" />
+         <activity android:name=".ApiPage" />
++        <activity android:name=".CallScreen" />
+         <activity android:name=".EditProfilePage" />
+         <activity android:name=".ProfilePage" />
+         <activity android:name=".RegisterPt2" />
+@@ -26,6 +27,7 @@
+         <activity android:name=".MainMenu" />
+         <activity android:name=".Search" />
+         <activity android:name=".SearchResult" />
++        <activity android:name=".LanguageSettings" />
+         <activity android:name=".MainActivity">
+             <intent-filter>
+                 <action android:name="android.intent.action.MAIN" />
+Index: app/src/main/java/com/example/fariscare/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fariscare;\r\n\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.os.Bundle;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ProgressBar;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\n\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.AuthResult;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.auth.FirebaseUser;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n    private static final String TAG=\"Recycler View ItemList\";\r\n    public Context logincontext;\r\n    Button loginbutton;\r\n    TextView register;\r\n    EditText EnterEmail,EnterPassword;\r\n    Button LoginButton;\r\n    TextView RegisterButton;\r\n    TextView ResetPassword;\r\n    FirebaseAuth Auth;\r\n    SharedPreferences Auto_login;\r\n    FirebaseUser user;\r\n    String uid;\r\n    DatabaseReference databaseReference;\r\n    ProgressBar progressBar;\r\n\r\n    public MainActivity(Context context)\r\n    {\r\n        logincontext=context;\r\n    }\r\n    public Context getLogincontext(){\r\n        return logincontext;\r\n    }\r\n    public  Context getContext(){\r\n        Context mContext = MainActivity.this;\r\n        return mContext;\r\n    }\r\n    public MainActivity(){}\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        Auto_login=getSharedPreferences(\"LoginButton\",MODE_PRIVATE);\r\n        setContentView(R.layout.activity_main);\r\n        loginbutton=(Button)findViewById(R.id.LoginButton);\r\n        register=(TextView)findViewById(R.id.Register);\r\n        EnterEmail=findViewById(R.id.EnterEmail);\r\n        EnterPassword=findViewById(R.id.EnterPassword);\r\n        Auth=FirebaseAuth.getInstance();\r\n        //progressBar =  findViewById(R.id.progressBar);\r\n        user=Auth.getCurrentUser();\r\n        databaseReference= FirebaseDatabase.getInstance().getReference().child(\"Member\");\r\n\r\n        //Auto_login.edit().putBoolean(\"logged\",false).apply();\r\n        //Chris - User is already logged in\r\n        if(Auto_login.getBoolean(\"logged\",false)){\r\n            databaseReference.orderByChild(\"email\").equalTo(user.getEmail()).addValueEventListener(new ValueEventListener() {\r\n                @Override\r\n                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {\r\n                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {\r\n                        //Chris - get uid from shared preferences\r\n                        uid = Auto_login.getString(\"UserID\", null);\r\n                        Log.v(TAG,\"the user id sent= \" + uid);\r\n                        Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);\r\n                        MainActivity.putExtra(\"User_UID\", uid);\r\n                        startActivity(MainActivity);\r\n                        finish();\r\n                    }\r\n                }\r\n\r\n                @Override\r\n                public void onCancelled(@NonNull DatabaseError databaseError) {\r\n\r\n                }\r\n\r\n                ;\r\n            });\r\n        }\r\n\r\n        loginbutton.setOnClickListener(new View.OnClickListener(){\r\n            @Override\r\n            public void onClick(View v) {\r\n                final String email, password;\r\n                email = EnterEmail.getText().toString().trim();\r\n                password = EnterPassword.getText().toString().trim();\r\n                //Chris - Validation\r\n                //Check for empty Inputs\r\n                if (email.isEmpty()) {\r\n                    Log.v(TAG,\"Email Required\");\r\n                    Toast.makeText(MainActivity.this, \"Email Required\", Toast.LENGTH_SHORT).show();\r\n                    return;\r\n                }\r\n\r\n                if (password.isEmpty())//check for empty input\r\n                {\r\n                    Log.v(TAG,\"Password Required\");\r\n                    Toast.makeText(MainActivity.this, \"Password Required\", Toast.LENGTH_SHORT).show();\r\n                    return;\r\n                }\r\n                if (password.length() < 6)//for exception to not appear\r\n                {\r\n                    Log.v(TAG,\"Password is must be at least contain 6 characters\");\r\n                    Toast.makeText(MainActivity.this, \"Password is must be at least contain 6 characters\", Toast.LENGTH_SHORT).show();\r\n                    return;\r\n                }\r\n                Auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {\r\n                    @Override\r\n                    public void onComplete(@NonNull Task<AuthResult> task) {\r\n                        if (task.isSuccessful()) {\r\n                            //Chris - find user id for the login user\r\n                            databaseReference.orderByChild(\"email\").equalTo(email).addValueEventListener(new ValueEventListener() {\r\n                                @Override\r\n                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {\r\n                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {\r\n                                        uid = snapshot.getKey();\r\n                                        String emergencycontact=snapshot.child(\"emergencyContact\").getValue().toString();\r\n                                        String name = snapshot.child(\"name\").getValue().toString();\r\n\r\n                                        //Chris - show that it works\r\n                                        Log.v(TAG, \"the user id sent= \" + uid);\r\n\r\n                                        //Chris -  save user id in shared preference\r\n                                        SharedPreferences.Editor editor = Auto_login.edit();\r\n                                        editor.putString(\"UserID\", uid).apply();\r\n                                        //Chris - if login is successful\r\n                                        //Chris - Intent to homepage and pass user id to it\r\n                                        Intent ToMenuPage = new Intent(MainActivity.this, MainMenu.class);\r\n                                        ToMenuPage.putExtra(\"User_UID\", uid);\r\n                                        ToMenuPage.putExtra(\"emergency\", emergencycontact);\r\n                                        Auto_login.edit().putBoolean(\"logged\", true).apply();\r\n                                        Log.v(TAG, \"sending this uid to main activity \" + uid);\r\n                                        startActivity(ToMenuPage);\r\n                                        finish();\r\n\r\n\r\n                                    }\r\n\r\n                                }\r\n                                @Override\r\n                                public void onCancelled(@NonNull DatabaseError databaseError) {\r\n                                }\r\n                            });\r\n\r\n\r\n                        }\r\n                        else {\r\n                            //Chris - if login failed\r\n                            //progressBar.setVisibility(View.INVISIBLE);\r\n                            Log.v(TAG,\"Login Failed\");\r\n                            Toast.makeText(MainActivity.this, \"Login Failed\", Toast.LENGTH_LONG).show();\r\n                        }\r\n\r\n                    }\r\n                });\r\n            }\r\n        });\r\n\r\n        register.setOnClickListener(new View.OnClickListener(){\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent RegisterIntent=new Intent(MainActivity.this,RegisterPage.class);\r\n                startActivity(RegisterIntent);\r\n            }\r\n        });\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/fariscare/MainActivity.java	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/java/com/example/fariscare/MainActivity.java	(date 1611767428610)
+@@ -3,12 +3,18 @@
+ import android.content.Context;
+ import android.content.Intent;
+ import android.content.SharedPreferences;
++import android.content.res.Configuration;
++import android.content.res.Resources;
+ import android.os.Bundle;
++import android.util.DisplayMetrics;
++import android.util.EventLog;
+ import android.util.Log;
+ import android.view.View;
++import android.widget.ArrayAdapter;
+ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.ProgressBar;
++import android.widget.Spinner;
+ import android.widget.TextView;
+ import android.widget.Toast;
+ 
+@@ -26,10 +32,13 @@
+ import com.google.firebase.database.FirebaseDatabase;
+ import com.google.firebase.database.ValueEventListener;
+ 
++import java.util.ArrayList;
++import java.util.Locale;
++
+ public class MainActivity extends AppCompatActivity {
+     private static final String TAG="Recycler View ItemList";
+     public Context logincontext;
+-    Button loginbutton;
++    Button loginbutton, langbutton;
+     TextView register;
+     EditText EnterEmail,EnterPassword;
+     Button LoginButton;
+@@ -42,6 +51,7 @@
+     DatabaseReference databaseReference;
+     ProgressBar progressBar;
+ 
++
+     public MainActivity(Context context)
+     {
+         logincontext=context;
+@@ -60,6 +70,17 @@
+         super.onCreate(savedInstanceState);
+         Auto_login=getSharedPreferences("LoginButton",MODE_PRIVATE);
+         setContentView(R.layout.activity_main);
++        loginbutton = (Button) findViewById(R.id.LoginButton);
++        register = (TextView) findViewById(R.id.Register);
++        EnterEmail = findViewById(R.id.EnterEmail);
++        EnterPassword = findViewById(R.id.EnterPassword);
++        Auth = FirebaseAuth.getInstance();
++        progressBar = findViewById(R.id.progressBar);
++        langbutton = findViewById(R.id.langbutton);
++        user = Auth.getCurrentUser();
++        databaseReference = FirebaseDatabase.getInstance().getReference().child("Member");
++        loadLocale();
++        //chris
+         loginbutton=(Button)findViewById(R.id.LoginButton);
+         register=(TextView)findViewById(R.id.Register);
+         EnterEmail=findViewById(R.id.EnterEmail);
+@@ -154,6 +175,7 @@
+                                     }
+ 
+                                 }
++
+                                 @Override
+                                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                                 }
+@@ -180,5 +202,47 @@
+                 startActivity(RegisterIntent);
+             }
+         });
++        //Faris
++        Spinner spinner = findViewById(R.id.spinner);
++        ArrayAdapter<CharSequence>adapter = ArrayAdapter.createFromResource(this,R.array.languages, android.R.layout.simple_spinner_item);
++        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
++        spinner.setAdapter(adapter);
++        langbutton.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                String lang = spinner.getSelectedItem().toString();
++                Toast.makeText(MainActivity.this,lang,Toast.LENGTH_SHORT).show();
++                setLocale(lang);
++                setAppLocale(lang);
++                recreate();
++            }
++        });
++
++    }
++    //Faris, changes locale and language
++    private void setAppLocale(String localeCode){
++        Resources resources = getResources();
++        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
++        Configuration configuration = resources.getConfiguration();
++        configuration.setLocale(new Locale(localeCode.toLowerCase()));
++        resources.updateConfiguration(configuration, displayMetrics);
++        configuration.locale = new Locale(localeCode.toLowerCase());
++        resources.updateConfiguration(configuration, displayMetrics);
++    }
++    private void setLocale(String lang) {
++        Locale locale = new Locale(lang);
++        Locale.setDefault(locale);
++        Configuration config = new Configuration();
++        config.locale = locale;
++        getBaseContext().getResources().updateConfiguration(config,getBaseContext().getResources().getDisplayMetrics());
++        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
++        editor.putString("Lang", lang);
++        editor.apply();
+     }
++    private void loadLocale(){
++        SharedPreferences prefs = getSharedPreferences("Settings",MODE_PRIVATE);
++        String lang = prefs.getString("Lang","");
++        setLocale(lang);
++    }
++
+ }
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_main_menu.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#2768A5\"\r\n    android:layout_gravity=\"center\"\r\n    tools:context=\".MainMenu\">\r\n\r\n\r\n    <androidx.constraintlayout.widget.ConstraintLayout\r\n        android:layout_width=\"match_parent\"\r\n        android:layout_height=\"match_parent\">\r\n\r\n        <ImageView\r\n            android:id=\"@+id/imageView9\"\r\n            android:layout_width=\"380dp\"\r\n            android:layout_height=\"232dp\"\r\n            android:layout_marginBottom=\"208dp\"\r\n            app:layout_constraintBottom_toTopOf=\"@+id/social\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.516\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toTopOf=\"parent\"\r\n            app:layout_constraintVertical_bias=\"0.976\"\r\n            app:srcCompat=\"@drawable/card\" />\r\n\r\n        <Button\r\n            android:id=\"@+id/emergency\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginBottom=\"40dp\"\r\n            android:width=\"150dp\"\r\n            android:height=\"150dp\"\r\n            android:background=\"#800000\"\r\n            android:drawableStart=\"@drawable/ic_problem\"\r\n            app:layout_constraintBottom_toTopOf=\"@+id/social\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.5\"\r\n            app:layout_constraintStart_toEndOf=\"@+id/groceries\" />\r\n\r\n        <Button\r\n            android:id=\"@+id/groceries\"\r\n            android:layout_width=\"150dp\"\r\n            android:layout_height=\"150dp\"\r\n            android:width=\"150dp\"\r\n            android:height=\"150dp\"\r\n            android:drawableStart=\"@drawable/ic_cart\"\r\n            app:layout_constraintBottom_toBottomOf=\"@+id/emergency\"\r\n            app:layout_constraintEnd_toStartOf=\"@+id/emergency\"\r\n            app:layout_constraintHorizontal_bias=\"0.5\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toTopOf=\"@+id/emergency\"\r\n            app:layout_constraintVertical_bias=\"0.0\" />\r\n\r\n        <Button\r\n            android:id=\"@+id/social\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginBottom=\"72dp\"\r\n            android:width=\"150dp\"\r\n            android:height=\"150dp\"\r\n            android:drawableStart=\"@drawable/ic_call\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.141\"\r\n            app:layout_constraintStart_toStartOf=\"parent\" />\r\n\r\n        <Button\r\n            android:id=\"@+id/event\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginBottom=\"72dp\"\r\n            android:width=\"150dp\"\r\n            android:height=\"150dp\"\r\n            android:drawableStart=\"@drawable/ic_baseline_event_note_24\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.858\"\r\n            app:layout_constraintStart_toStartOf=\"parent\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/NameHome\"\r\n            android:layout_width=\"200dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:textSize=\"18dp\"\r\n            android:textStyle=\"bold\"\r\n            app:layout_constraintBottom_toTopOf=\"@+id/textView2\"\r\n            app:layout_constraintEnd_toEndOf=\"@+id/imageView9\"\r\n            app:layout_constraintHorizontal_bias=\"0.827\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/imageView9\"\r\n            app:layout_constraintTop_toTopOf=\"@+id/imageView9\"\r\n            app:layout_constraintVertical_bias=\"0.967\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/DOBHome\"\r\n            android:layout_width=\"200dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:textSize=\"18dp\"\r\n            android:textStyle=\"bold\"\r\n            app:layout_constraintBottom_toTopOf=\"@+id/textView3\"\r\n            app:layout_constraintEnd_toEndOf=\"@+id/imageView9\"\r\n            app:layout_constraintHorizontal_bias=\"0.827\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/imageView9\"\r\n            app:layout_constraintTop_toTopOf=\"@+id/imageView9\"\r\n            app:layout_constraintVertical_bias=\"1.0\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/textView\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"@string/Name\"\r\n            android:textSize=\"18dp\"\r\n            android:textStyle=\"bold\"\r\n            app:layout_constraintBottom_toTopOf=\"@+id/textView2\"\r\n            app:layout_constraintEnd_toEndOf=\"@+id/imageView9\"\r\n            app:layout_constraintHorizontal_bias=\"0.447\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/imageView9\"\r\n            app:layout_constraintTop_toTopOf=\"@+id/imageView9\"\r\n            app:layout_constraintVertical_bias=\"0.649\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/textView2\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:text=\"@string/Date_Of_Birth\"\r\n            android:textSize=\"18dp\"\r\n            android:textStyle=\"bold\"\r\n            app:layout_constraintBottom_toBottomOf=\"@+id/imageView9\"\r\n            app:layout_constraintEnd_toEndOf=\"@+id/imageView9\"\r\n            app:layout_constraintHorizontal_bias=\"0.541\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/imageView9\"\r\n            app:layout_constraintTop_toTopOf=\"@+id/imageView9\"\r\n            app:layout_constraintVertical_bias=\"0.485\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/AddressHome\"\r\n            android:layout_width=\"200dp\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:textSize=\"18dp\"\r\n            android:textStyle=\"bold\"\r\n            app:layout_constraintBottom_toBottomOf=\"@+id/imageView9\"\r\n            app:layout_constraintEnd_toEndOf=\"@+id/imageView9\"\r\n            app:layout_constraintHorizontal_bias=\"0.827\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/imageView9\"\r\n            app:layout_constraintTop_toBottomOf=\"@+id/textView3\"\r\n            app:layout_constraintVertical_bias=\"0.025\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/textView3\"\r\n            android:layout_width=\"wrap_content\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginTop=\"20dp\"\r\n            android:text=\"@string/Address\"\r\n            android:textSize=\"18dp\"\r\n            android:textStyle=\"bold\"\r\n            app:layout_constraintBottom_toBottomOf=\"@+id/imageView9\"\r\n            app:layout_constraintEnd_toEndOf=\"@+id/imageView9\"\r\n            app:layout_constraintHorizontal_bias=\"0.476\"\r\n            app:layout_constraintStart_toStartOf=\"@+id/imageView9\"\r\n            app:layout_constraintTop_toBottomOf=\"@+id/textView2\"\r\n            app:layout_constraintVertical_bias=\"0.015\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginTop=\"44dp\"\r\n            android:orientation=\"horizontal\"\r\n            android:weightSum=\"2\"\r\n            app:layout_constraintBottom_toBottomOf=\"parent\"\r\n            app:layout_constraintEnd_toEndOf=\"parent\"\r\n            app:layout_constraintHorizontal_bias=\"0.0\"\r\n            app:layout_constraintStart_toStartOf=\"parent\"\r\n            app:layout_constraintTop_toBottomOf=\"@+id/social\"\r\n            app:layout_constraintVertical_bias=\"1.0\">\r\n\r\n            <ImageView\r\n                android:id=\"@+id/imageView2\"\r\n                android:layout_width=\"45dp\"\r\n                android:layout_height=\"45dp\"\r\n                android:layout_marginVertical=\"7.5dp\"\r\n                android:layout_marginLeft=\"80dp\"\r\n                app:srcCompat=\"@drawable/ic_baseline_home_24\" />\r\n\r\n            <ImageView\r\n                android:id=\"@+id/imageView3\"\r\n                android:layout_width=\"45dp\"\r\n                android:layout_height=\"45dp\"\r\n                android:layout_marginVertical=\"7.5dp\"\r\n                android:layout_marginLeft=\"58dp\"\r\n                app:srcCompat=\"@drawable/ic_baseline_shopping_basket_24\" />\r\n\r\n            <ImageView\r\n                android:id=\"@+id/imageView4\"\r\n                android:layout_width=\"45dp\"\r\n                android:layout_height=\"45dp\"\r\n                android:layout_marginVertical=\"7.5dp\"\r\n                android:layout_marginLeft=\"60dp\"\r\n                app:srcCompat=\"@drawable/ic_baseline_phone_24\" />\r\n\r\n        </LinearLayout>\r\n\r\n\r\n    </androidx.constraintlayout.widget.ConstraintLayout>\r\n\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_main_menu.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/layout/activity_main_menu.xml	(date 1611805085335)
+@@ -7,6 +7,22 @@
+     android:background="#2768A5"
+     android:layout_gravity="center"
+     tools:context=".MainMenu">
++    <LinearLayout
++        android:layout_width="match_parent"
++        android:layout_height="75dp">
++
++        <ImageButton
++            android:id="@+id/langbutton"
++            android:layout_width="50dp"
++            android:layout_height="match_parent"
++            android:layout_gravity="right"
++            android:background="@null"
++            android:layout_marginLeft="350dp"
++            android:gravity="center"
++            android:scaleType="fitCenter"
++            android:src="@drawable/globe" />
++    </LinearLayout>
++
+ 
+ 
+     <androidx.constraintlayout.widget.ConstraintLayout
+Index: app/src/main/res/values-ms/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<resources>\r\n    <string name=\"app_name\">FarisCare</string>\r\n    <string name=\"Name\">Nama</string>\r\n    <string name=\"Date_Of_Birth\">Tarikh Lahir</string>\r\n    <string name=\"Address\">Alamat</string>\r\n    <string name=\"Emergency_Contact\">Talian Kecemasan</string>\r\n    <string name=\"Profile\">Profil</string>\r\n    <string name=\"donthaveaccount\">Tidak mempunyai akaun?</string>\r\n    <string name=\"Email\">Alamat Emel</string>\r\n    <string name=\"Password\">Kata Laluan</string>\r\n    <string name=\"Register\">Daftar</string>\r\n    <string name=\"SignIn\">Log Masuk</string>\r\n    <string name=\"Username\">Nama Pengguna</string>\r\n    <string name=\"Wecareforyou\">Kami peduli demi anda</string>\r\n    <string name=\"PhoneNumber\">Nombor Telefon</string>\r\n    <string name=\"CreateAccount\">Buat Akaun</string>\r\n    <string name=\"Volunteer_Code\">Kod Sukarelawan</string>\r\n    <string name=\"ConfirmPassword\">Mengesahkan Kata Laluan</string>\r\n    <string name=\"Next\">Seterusnya</string>\r\n    <string name=\"Edit\">Sunting</string>\r\n    <string name=\"PostalCode\">Poskod</string>\r\n    <string name=\"Confirm\">Mengesah</string>\r\n    <string name=\"next\">Seterusnya</string>\r\n    <string name=\"previous\">Sebelum</string>\r\n    <string name=\"Call\">Hubungi</string>\r\n    <string name=\"Back\">Balik</string>\r\n    <string-array name=\"languages\">\r\n        <item>Pilih Bahasa:</item>\r\n        <item>en</item>\r\n        <item>zh</item>\r\n        <item>ms</item>\r\n        <item>ta</item>\r\n    </string-array>\r\n    <string name=\"CurrentActiveCases\">Kes Aktif Semasa:</string>\r\n    <string name=\"CurrentCriticalCases\">Kes Kritikal Semasa:</string>\r\n    <string name=\"TotalInfectedCases\">Jumlah Kes Jangkitan:</string>\r\n    <string name=\"TotalDeceasedCases\">Jumlah Kes Termati:</string>\r\n    <string name=\"TotalRecoveredCases\">Jumlah Kes Sembuh:</string>\r\n    <string name=\"ChangeLanguage\">Tukar Bahasa</string>\r\n    <string name=\"CurrentStableCases\">Kes Stabil Semasa:</string>\r\n    <string name=\"LastUpdatedOn\">Terakhir Dikemaskini:</string>\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/values-ms/strings.xml	(revision 33ff2adbed04ae2420359eb0e12972f244747d2c)
++++ app/src/main/res/values-ms/strings.xml	(date 1611804204192)
+@@ -40,4 +40,13 @@
+     <string name="ChangeLanguage">Tukar Bahasa</string>
+     <string name="CurrentStableCases">Kes Stabil Semasa:</string>
+     <string name="LastUpdatedOn">Terakhir Dikemaskini:</string>
++    <string name="Language">Bahasa</string>
++    <string name="PrivateEvents">Acara Swasta</string>
++    <string name="Search">Cari</string>
++    <string name="PublicEventToSearch">Cari Acara Awam</string>
++    <string name="Title">Tajuk</string>
++    <string name="Date">Tarikh</string>
++    <string name="Time">Masa</string>
++    <string name="Notes">Catatan</string>
++    <string name="AddEvent">Tambah Acara</string>
+ </resources>
+\ No newline at end of file

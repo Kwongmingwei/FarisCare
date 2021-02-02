@@ -1,0 +1,220 @@
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleMigrationSettings\" migrationVersion=\"1\" />\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"disableWrapperSourceDistributionNotification\" value=\"true\" />\r\n        <option name=\"distributionType\" value=\"DEFAULT_WRAPPED\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\r\n        <option name=\"gradleJvm\" value=\"1.8\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$\" />\r\n            <option value=\"$PROJECT_DIR$/app\" />\r\n            <option value=\"$PROJECT_DIR$/sinch-android-rtc-3.17.5\" />\r\n          </set>\r\n        </option>\r\n        <option name=\"resolveModulePerSourceSet\" value=\"false\" />\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- .idea/gradle.xml	(revision 4fcd58f5516321efaf1c3ddda637d2bdbd83b894)
++++ .idea/gradle.xml	(date 1611669327144)
+@@ -17,6 +17,7 @@
+           </set>
+         </option>
+         <option name="resolveModulePerSourceSet" value="false" />
++        <option name="useQualifiedModuleNames" value="true" />
+       </GradleProjectSettings>
+     </option>
+   </component>
+Index: app/src/main/java/com/example/fariscare/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.fariscare;\r\n\r\nimport android.content.Context;\r\nimport android.content.Intent;\r\nimport android.content.SharedPreferences;\r\nimport android.os.Bundle;\r\nimport android.util.EventLog;\r\nimport android.util.Log;\r\nimport android.view.View;\r\nimport android.widget.Button;\r\nimport android.widget.EditText;\r\nimport android.widget.ProgressBar;\r\nimport android.widget.TextView;\r\nimport android.widget.Toast;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.appcompat.app.AppCompatActivity;\r\nimport androidx.recyclerview.widget.LinearLayoutManager;\r\nimport androidx.recyclerview.widget.RecyclerView;\r\n\r\nimport com.example.fariscare.Adapters.EventItem;\r\nimport com.google.android.gms.tasks.OnCompleteListener;\r\nimport com.google.android.gms.tasks.Task;\r\nimport com.google.firebase.auth.AuthResult;\r\nimport com.google.firebase.auth.FirebaseAuth;\r\nimport com.google.firebase.auth.FirebaseUser;\r\nimport com.google.firebase.database.DataSnapshot;\r\nimport com.google.firebase.database.DatabaseError;\r\nimport com.google.firebase.database.DatabaseReference;\r\nimport com.google.firebase.database.FirebaseDatabase;\r\nimport com.google.firebase.database.ValueEventListener;\r\n\r\nimport java.util.ArrayList;\r\n\r\npublic class MainActivity extends AppCompatActivity {\r\n    private static final String TAG=\"Recycler View ItemList\";\r\n    public Context logincontext;\r\n    Button loginbutton;\r\n    TextView register;\r\n    EditText EnterEmail,EnterPassword;\r\n    Button LoginButton;\r\n    TextView RegisterButton;\r\n    TextView ResetPassword;\r\n    FirebaseAuth Auth;\r\n    SharedPreferences Auto_login;\r\n    FirebaseUser user;\r\n    String uid;\r\n    DatabaseReference databaseReference;\r\n    ProgressBar progressBar;\r\n\r\n    public MainActivity(Context context)\r\n    {\r\n        logincontext=context;\r\n    }\r\n    public Context getLogincontext(){\r\n        return logincontext;\r\n    }\r\n    public  Context getContext(){\r\n        Context mContext = MainActivity.this;\r\n        return mContext;\r\n    }\r\n    public MainActivity(){}\r\n\r\n    @Override\r\n    protected void onCreate(Bundle savedInstanceState) {\r\n        super.onCreate(savedInstanceState);\r\n        Auto_login = getSharedPreferences(\"LoginButton\", MODE_PRIVATE);\r\n        setContentView(R.layout.activity_main);\r\n        loginbutton = (Button) findViewById(R.id.LoginButton);\r\n        register = (TextView) findViewById(R.id.Register);\r\n        EnterEmail = findViewById(R.id.EnterEmail);\r\n        EnterPassword = findViewById(R.id.EnterPassword);\r\n        Auth = FirebaseAuth.getInstance();\r\n        progressBar = findViewById(R.id.progressBar);\r\n        user = Auth.getCurrentUser();\r\n        databaseReference = FirebaseDatabase.getInstance().getReference().child(\"Member\");\r\n        //chris\r\n        //Auto_login.edit().putBoolean(\"logged\",false).apply();\r\n        //Chris - User is already logged in\r\n        if (Auto_login.getBoolean(\"logged\", false)) {\r\n            databaseReference.orderByChild(\"email\").equalTo(user.getEmail()).addValueEventListener(new ValueEventListener() {\r\n                @Override\r\n                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {\r\n                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {\r\n                        //Chris - get uid from shared preferences\r\n                        uid = Auto_login.getString(\"UserID\", null);\r\n                        Log.v(TAG, \"the user id sent= \" + uid);\r\n                        Intent MainActivity = new Intent(MainActivity.this, MainMenu.class);\r\n                        MainActivity.putExtra(\"User_UID\", uid);\r\n                        startActivity(MainActivity);\r\n                        finish();\r\n                    }\r\n                }\r\n\r\n                @Override\r\n                public void onCancelled(@NonNull DatabaseError databaseError) {\r\n\r\n                }\r\n\r\n                ;\r\n            });\r\n        }\r\n\r\n        loginbutton.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                final String email, password;\r\n                email = EnterEmail.getText().toString().trim();\r\n                password = EnterPassword.getText().toString().trim();\r\n                //Chris - Validation\r\n                //Check for empty Inputs\r\n                if (email.isEmpty()) {\r\n                    Log.v(TAG, \"Email Required\");\r\n                    Toast.makeText(MainActivity.this, \"Email Required\", Toast.LENGTH_SHORT).show();\r\n                    return;\r\n                }\r\n\r\n                if (password.isEmpty())//check for empty input\r\n                {\r\n                    Log.v(TAG, \"Password Required\");\r\n                    Toast.makeText(MainActivity.this, \"Password Required\", Toast.LENGTH_SHORT).show();\r\n                    return;\r\n                }\r\n                if (password.length() < 6)//for exception to not appear\r\n                {\r\n                    Log.v(TAG, \"Password is must be at least contain 6 characters\");\r\n                    Toast.makeText(MainActivity.this, \"Password is must be at least contain 6 characters\", Toast.LENGTH_SHORT).show();\r\n                    return;\r\n                }\r\n                Auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {\r\n                    @Override\r\n                    public void onComplete(@NonNull Task<AuthResult> task) {\r\n                        if (task.isSuccessful()) {\r\n                            //Chris - find user id for the login user\r\n                            databaseReference.orderByChild(\"email\").equalTo(email).addValueEventListener(new ValueEventListener() {\r\n                                @Override\r\n                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {\r\n                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {\r\n                                        uid = snapshot.getKey();\r\n                                        String emergencycontact = snapshot.child(\"emergencyContact\").getValue().toString();\r\n                                        String name = snapshot.child(\"name\").getValue().toString();\r\n\r\n                                        //Chris - show that it works\r\n                                        Log.v(TAG, \"the user id sent= \" + uid);\r\n\r\n                                        //Chris -  save user id in shared preference\r\n                                        SharedPreferences.Editor editor = Auto_login.edit();\r\n                                        editor.putString(\"UserID\", uid).apply();\r\n                                        //Chris - if login is successful\r\n                                        //Chris - Intent to homepage and pass user id to it\r\n                                        Intent ToMenuPage = new Intent(MainActivity.this, MainMenu.class);\r\n                                        ToMenuPage.putExtra(\"User_UID\", uid);\r\n                                        ToMenuPage.putExtra(\"emergency\", emergencycontact);\r\n                                        Auto_login.edit().putBoolean(\"logged\", true).apply();\r\n                                        Log.v(TAG, \"sending this uid to main activity \" + uid);\r\n                                        startActivity(ToMenuPage);\r\n                                        finish();\r\n\r\n\r\n                                    }\r\n\r\n                                }\r\n\r\n                                @Override\r\n                                public void onCancelled(@NonNull DatabaseError databaseError) {\r\n                                }\r\n                            });\r\n\r\n\r\n                        } else {\r\n                            //Chris - if login failed\r\n                            progressBar.setVisibility(View.INVISIBLE);\r\n                            Log.v(TAG, \"Login Failed\");\r\n                            Toast.makeText(MainActivity.this, \"Login Failed\", Toast.LENGTH_LONG).show();\r\n                        }\r\n\r\n                    }\r\n                });\r\n            }\r\n        });\r\n\r\n        register.setOnClickListener(new View.OnClickListener() {\r\n            @Override\r\n            public void onClick(View v) {\r\n                Intent RegisterIntent = new Intent(MainActivity.this, RegisterPage.class);\r\n                startActivity(RegisterIntent);\r\n            }\r\n        });\r\n\r\n\r\n    }\r\n\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/fariscare/MainActivity.java	(revision 4fcd58f5516321efaf1c3ddda637d2bdbd83b894)
++++ app/src/main/java/com/example/fariscare/MainActivity.java	(date 1611718129197)
+@@ -3,13 +3,18 @@
+ import android.content.Context;
+ import android.content.Intent;
+ import android.content.SharedPreferences;
++import android.content.res.Configuration;
++import android.content.res.Resources;
+ import android.os.Bundle;
++import android.util.DisplayMetrics;
+ import android.util.EventLog;
+ import android.util.Log;
+ import android.view.View;
++import android.widget.ArrayAdapter;
+ import android.widget.Button;
+ import android.widget.EditText;
+ import android.widget.ProgressBar;
++import android.widget.Spinner;
+ import android.widget.TextView;
+ import android.widget.Toast;
+ 
+@@ -31,11 +36,12 @@
+ import com.google.firebase.database.ValueEventListener;
+ 
+ import java.util.ArrayList;
++import java.util.Locale;
+ 
+ public class MainActivity extends AppCompatActivity {
+     private static final String TAG="Recycler View ItemList";
+     public Context logincontext;
+-    Button loginbutton;
++    Button loginbutton, langbutton;
+     TextView register;
+     EditText EnterEmail,EnterPassword;
+     Button LoginButton;
+@@ -48,6 +54,7 @@
+     DatabaseReference databaseReference;
+     ProgressBar progressBar;
+ 
++
+     public MainActivity(Context context)
+     {
+         logincontext=context;
+@@ -72,8 +79,10 @@
+         EnterPassword = findViewById(R.id.EnterPassword);
+         Auth = FirebaseAuth.getInstance();
+         progressBar = findViewById(R.id.progressBar);
++        langbutton = findViewById(R.id.langbutton);
+         user = Auth.getCurrentUser();
+         databaseReference = FirebaseDatabase.getInstance().getReference().child("Member");
++        loadLocale();
+         //chris
+         //Auto_login.edit().putBoolean("logged",false).apply();
+         //Chris - User is already logged in
+@@ -186,8 +195,47 @@
+                 startActivity(RegisterIntent);
+             }
+         });
++        //Faris
++        Spinner spinner = findViewById(R.id.spinner);
++        ArrayAdapter<CharSequence>adapter = ArrayAdapter.createFromResource(this,R.array.languages, android.R.layout.simple_spinner_item);
++        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
++        spinner.setAdapter(adapter);
++        langbutton.setOnClickListener(new View.OnClickListener() {
++            @Override
++            public void onClick(View view) {
++                String lang = spinner.getSelectedItem().toString();
++                Toast.makeText(MainActivity.this,lang,Toast.LENGTH_SHORT).show();
++                setLocale(lang);
++                setAppLocale(lang);
++                recreate();
++            }
++        });
+ 
+-
++    }
++    //Faris, changes locale and language
++    private void setAppLocale(String localeCode){
++        Resources resources = getResources();
++        DisplayMetrics displayMetrics = resources.getDisplayMetrics();
++        Configuration configuration = resources.getConfiguration();
++        configuration.setLocale(new Locale(localeCode.toLowerCase()));
++        resources.updateConfiguration(configuration, displayMetrics);
++        configuration.locale = new Locale(localeCode.toLowerCase());
++        resources.updateConfiguration(configuration, displayMetrics);
++    }
++    private void setLocale(String lang) {
++        Locale locale = new Locale(lang);
++        Locale.setDefault(locale);
++        Configuration config = new Configuration();
++        config.locale = locale;
++        getBaseContext().getResources().updateConfiguration(config,getBaseContext().getResources().getDisplayMetrics());
++        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
++        editor.putString("Lang", lang);
++        editor.apply();
++    }
++    private void loadLocale(){
++        SharedPreferences prefs = getSharedPreferences("Settings",MODE_PRIVATE);
++        String lang = prefs.getString("Lang","");
++        setLocale(lang);
+     }
+ 
+ }
+\ No newline at end of file
+Index: app/src/main/res/drawable/roundedbutton.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/drawable/roundedbutton.xml	(date 1611670226467)
++++ app/src/main/res/drawable/roundedbutton.xml	(date 1611670226467)
+@@ -0,0 +1,5 @@
++<?xml version="1.0" encoding="utf-8"?>
++<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
++    <solid android:color="#d40003"/>
++    <corners android:radius="20dp"/>
++</shape>
+\ No newline at end of file
+Index: app/src/main/res/layout/activity_call_screen.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<RelativeLayout xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\"\r\n    android:layout_width=\"match_parent\"\r\n    android:layout_height=\"match_parent\"\r\n    android:background=\"#2768A5\"\r\n    tools:context=\".ProfilePage\">\r\n\r\n    <LinearLayout\r\n        android:layout_width=\"300dp\"\r\n        android:layout_height=\"match_parent\"\r\n        android:layout_alignParentStart=\"true\"\r\n        android:layout_alignParentTop=\"true\"\r\n        android:layout_alignParentEnd=\"true\"\r\n        android:layout_alignParentBottom=\"true\"\r\n        android:layout_marginStart=\"26dp\"\r\n        android:layout_marginTop=\"11dp\"\r\n        android:layout_marginEnd=\"34dp\"\r\n        android:layout_marginBottom=\"8dp\"\r\n        android:orientation=\"vertical\">\r\n\r\n\r\n        <ImageView\r\n            android:id=\"@+id/imageView\"\r\n            android:layout_width=\"218dp\"\r\n            android:layout_height=\"231dp\"\r\n            android:layout_gravity=\"center\"\r\n            app:srcCompat=\"@drawable/image\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/name\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"92dp\"\r\n            android:layout_marginBottom=\"40dp\"\r\n            android:gravity=\"center\"\r\n            android:text=\"John Doe\"\r\n            android:textColor=\"#FFD246\"\r\n            android:textSize=\"70dp\"\r\n            android:textStyle=\"bold\" />\r\n\r\n        <TextView\r\n            android:id=\"@+id/callinfo\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:layout_marginBottom=\"4dp\"\r\n            android:baselineAligned=\"false\"\r\n            android:gravity=\"center\"\r\n            android:text=\"Calling...\"\r\n            android:textColor=\"#FFD246\"\r\n            android:textSize=\"30dp\"\r\n            android:textStyle=\"bold\" />\r\n\r\n        <LinearLayout\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"wrap_content\"\r\n            android:orientation=\"horizontal\">\r\n\r\n            <ImageButton\r\n                android:id=\"@+id/speaker\"\r\n                android:layout_width=\"120dp\"\r\n                android:layout_height=\"120dp\"\r\n                android:layout_gravity=\"left\"\r\n                android:background=\"@null\"\r\n                android:scaleType=\"fitCenter\"\r\n                android:src=\"@drawable/call\" />\r\n\r\n        </LinearLayout>\r\n\r\n        <Button\r\n            android:id=\"@+id/hangup\"\r\n            android:layout_width=\"match_parent\"\r\n            android:layout_height=\"69dp\"\r\n            android:text=\"End Call\"\r\n            android:textColor=\"@android:color/holo_red_dark\"\r\n            android:textSize=\"40dp\" />\r\n    </LinearLayout>\r\n\r\n</RelativeLayout>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/layout/activity_call_screen.xml	(revision 4fcd58f5516321efaf1c3ddda637d2bdbd83b894)
++++ app/src/main/res/layout/activity_call_screen.xml	(date 1611670982861)
+@@ -32,7 +32,7 @@
+             android:id="@+id/name"
+             android:layout_width="match_parent"
+             android:layout_height="92dp"
+-            android:layout_marginBottom="40dp"
++            android:layout_marginBottom="10dp"
+             android:gravity="center"
+             android:text="John Doe"
+             android:textColor="#FFD246"
+@@ -43,37 +43,47 @@
+             android:id="@+id/callinfo"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:layout_marginBottom="4dp"
+             android:baselineAligned="false"
+             android:gravity="center"
+             android:text="Calling..."
+             android:textColor="#FFD246"
+             android:textSize="30dp"
++            android:layout_marginBottom="30dp"
+             android:textStyle="bold" />
+ 
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+-            android:orientation="horizontal">
++            android:orientation="horizontal"
++            android:gravity="center">
+ 
+             <ImageButton
+                 android:id="@+id/speaker"
+                 android:layout_width="120dp"
+                 android:layout_height="120dp"
+-                android:layout_gravity="left"
++                android:layout_gravity="center"
+                 android:background="@null"
++                android:gravity="center"
+                 android:scaleType="fitCenter"
+                 android:src="@drawable/call" />
+ 
+         </LinearLayout>
+-
+-        <Button
+-            android:id="@+id/hangup"
+-            android:layout_width="match_parent"
+-            android:layout_height="69dp"
+-            android:text="End Call"
+-            android:textColor="@android:color/holo_red_dark"
+-            android:textSize="40dp" />
++        <LinearLayout
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:orientation="horizontal"
++            android:gravity="center"
++            android:paddingTop="20dp">
++            <Button
++                android:id="@+id/hangup"
++                android:layout_width="match_parent"
++                android:layout_height="69dp"
++                android:background="@drawable/roundedbutton"
++                android:text="End Call"
++                android:textColor="#FFFFFF"
++                android:textSize="40dp" />
++        </LinearLayout>
++
+     </LinearLayout>
+ 
+ </RelativeLayout>
+\ No newline at end of file

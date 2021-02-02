@@ -1,0 +1,14 @@
+<changelist name="Uncommitted_changes_before_Update_at_1_31_2021_1_24_PM_[Default_Changelist]" date="1612070856833" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_31_2021_1_24_PM_[Default_Changelist]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 1/31/2021 1:24 PM [Default Changelist]" />
+  <binary>
+    <option name="BEFORE_PATH" value=".vs/FarisCare/v16/.suo" />
+    <option name="AFTER_PATH" value=".vs/FarisCare/v16/.suo" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_31_2021_1_24_PM_[Default_Changelist]/.suo" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" />
+    <option name="AFTER_PATH" value="app/src/main/res/drawable-v24/globe.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_31_2021_1_24_PM_[Default_Changelist]/globe.png" />
+  </binary>
+</changelist>
