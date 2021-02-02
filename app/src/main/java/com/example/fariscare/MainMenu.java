@@ -3,7 +3,10 @@ package com.example.fariscare;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +41,7 @@ import com.sinch.android.rtc.calling.CallClientListener;
 import com.sinch.android.rtc.calling.CallListener;
 
 import java.util.List;
+import java.util.Locale;
 
 import static com.google.android.gms.common.internal.safeparcel.SafeParcelable.NULL;
 
@@ -46,7 +50,6 @@ public class MainMenu extends AppCompatActivity {
     Button socialButton;
     Button apiButton;
     Button eventButton;
-    ImageButton langButton;
     String eContact,uid;
     TextView address,name,dob;
     DatabaseReference databaseReference;
@@ -96,6 +99,7 @@ public class MainMenu extends AppCompatActivity {
         firebaseUser=auth.getCurrentUser();
 
         Log.v("sinchuid",firebaseUser.getUid());
+        loadLocale();
 
         sinchClient= Sinch.getSinchClientBuilder().context(this)
                 .userId(firebaseUser.getUid())
@@ -120,7 +124,6 @@ public class MainMenu extends AppCompatActivity {
 
         });
         sinchClient.start();
-
 
         apiButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,12 +273,12 @@ public class MainMenu extends AppCompatActivity {
         @Override
         public void onIncomingCall(CallClient callClient, final Call incomingcall) {
 
-            AlertDialog alertDialog =new AlertDialog.Builder(MainMenu.this).create();
+            AlertDialog alertDialog = new AlertDialog.Builder(MainMenu.this).create();
             alertDialog.setTitle("Calling...");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Reject", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    calls=incomingcall;
+                    calls = incomingcall;
                     dialog.dismiss();
                     calls.hangup();
                 }
@@ -283,15 +286,30 @@ public class MainMenu extends AppCompatActivity {
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Pick up", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    calls=incomingcall;
+                    calls = incomingcall;
                     calls.answer();
                     calls.addCallListener(new MainMenu.SinchCallListener());
-                    Toast.makeText(getApplicationContext(),"Call is answered",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Call is answered", Toast.LENGTH_LONG).show();
                 }
             });
 
             alertDialog.show();
         }
+    }
+    private void loadLocale(){
+        SharedPreferences prefs = getSharedPreferences("Settings",MODE_PRIVATE);
+        String lang = prefs.getString("Lang","");
+        setLocale(lang);
+    }
+    private void setLocale(String lang) {
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config,getBaseContext().getResources().getDisplayMetrics());
+        SharedPreferences.Editor editor = getSharedPreferences("Settings",MODE_PRIVATE).edit();
+        editor.putString("Lang", lang);
+        editor.apply();
     }
 }
 

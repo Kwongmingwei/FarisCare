@@ -24,8 +24,9 @@
 
 
 
-            <ImageView
-                android:id="@+id/imageView5"
+            <ImageButton
+                android:background="#2768A5"
+                android:id="@+id/backarrow"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:layout_marginLeft="10dp"

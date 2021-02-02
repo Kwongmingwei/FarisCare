@@ -1,5 +1,6 @@
 package com.example.fariscare;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -8,6 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,12 +19,14 @@ import java.util.Locale;
 
 public class LanguageSettings extends AppCompatActivity {
     Button lang;
+    ImageButton back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lang_settings);
         Spinner spinner = findViewById(R.id.spinner);
         lang = (Button)findViewById(R.id.langbutton);
+        back = (ImageButton)findViewById(R.id.backarrow);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.languages, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -36,8 +40,8 @@ public class LanguageSettings extends AppCompatActivity {
                 recreate();
             }
         });
-
     }
+
     private void setAppLocale(String localeCode){
         Resources resources = getResources();
         DisplayMetrics displayMetrics = resources.getDisplayMetrics();
